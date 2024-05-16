@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 
 class CategoryListAdapter :
-    ListAdapter<CategoryUiData, CategoryListAdapter.CategoryViewHolder>(CategoryDiffUtils()) {
+    ListAdapter<CategoryUiData, CategoryListAdapter.CategoryViewHolder>(CategoryListAdapter) {
 
 
     private lateinit var onClick: (CategoryUiData) -> Unit
@@ -45,7 +45,7 @@ class CategoryListAdapter :
         }
     }
 
-    class CategoryDiffUtils: DiffUtil.ItemCallback<CategoryUiData>() {
+    companion object CategoryDiffUtils: DiffUtil.ItemCallback<CategoryUiData>() {
         override fun areItemsTheSame(oldItem: CategoryUiData, newItem: CategoryUiData): Boolean {
             return oldItem == newItem
         }

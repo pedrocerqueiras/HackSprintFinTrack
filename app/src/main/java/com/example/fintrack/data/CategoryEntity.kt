@@ -1,17 +1,17 @@
 package com.example.fintrack.data
 
 import android.graphics.Color
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "categories")
-
+@Entity
 data class CategoryEntity(
-    @PrimaryKey(autoGenerate = true)
-    val id: Long = 0L,
+    @PrimaryKey
+    @ColumnInfo("categorykey")
     val name: String,
-    val color: Int,
-    val icon: Int
+    @ColumnInfo ("is_selected")
+    val isSelected: Boolean
 )
 
 
