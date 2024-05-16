@@ -163,20 +163,38 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun updateExpense (expenseEntity: ExpenseEntity){
+        GlobalScope.launch (Dispatchers.IO){
+            expenseDao.update(expenseEntity)
+            getExpensesFromDataBase()
+        }
+    }
+
     private fun showCreateUpdateExpenseBottomSheet(expenseUiData: ExpenseUiData? = null) {
 
         val createExpenseBottomSheet = CreateOrUpdateExpenseBottomSheet(
             expense = expenseUiData,
-            categoryList = categories
-        ) { expenseToBeCreated ->
-            val expenseEntityToBeInsert = ExpenseEntity(
-                name = expenseToBeCreated.name,
-                category = expenseToBeCreated.category,
-                amount = expenseToBeCreated.amount
-            )
-            insertExpense(expenseEntityToBeInsert)
-        }
+            categoryList = categories,
+            onCreateClicked = { expenseToBeCreated ->
+                val expenseEntityToBeInsert = ExpenseEntity(
+                    name = expenseToBeCreated.name,
+                    category = expenseToBeCreated.category,
+                    amount = expenseToBeCreated.amount
+                )
+                insertExpense(expenseEntityToBeInsert)
 
+            },
+            onUpdateClicked = {expenseToBeUpdated ->
+                val expenseEntityToBeUpdate = ExpenseEntity(
+                    id = expenseToBeUpdated.id,
+                    name = expenseToBeUpdated.name,
+                    category = expenseToBeUpdated.category,
+                    amount = expenseToBeUpdated.amount
+                )
+                updateExpense(expenseEntityToBeUpdate)
+
+            }
+        )
         createExpenseBottomSheet.show(
             supportFragmentManager,
             "createExpenseBottomSheet"

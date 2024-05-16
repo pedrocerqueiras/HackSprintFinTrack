@@ -18,4 +18,7 @@ interface ExpenseDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(expenseEntity: ExpenseEntity)
 
+    @Update
+    fun update (expenseEntity: ExpenseEntity)
+
 }
