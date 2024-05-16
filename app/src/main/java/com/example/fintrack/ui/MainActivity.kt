@@ -15,7 +15,7 @@ import com.example.fintrack.data.FinTrackDataBase
 import com.example.fintrack.data.dao.CategoryDao
 import com.example.fintrack.data.dao.ExpenseDao
 import com.example.fintrack.ui.category.CreateCategoryBottomSheet
-import com.example.fintrack.ui.category.CreateExpenseBottomSheet
+import com.example.fintrack.ui.category.CreateOrUpdateExpenseBottomSheet
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -26,7 +26,10 @@ class MainActivity : AppCompatActivity() {
     private var categories = listOf<CategoryUiData>()
     private var expenses = listOf<ExpenseUiData>()
 
-    val categoryAdapter = CategoryListAdapter()
+    private val categoryAdapter = CategoryListAdapter()
+    private val expenseAdapter by lazy {
+        ExpenseListAdapter()
+    }
 
     private val db by lazy {
         Room.databaseBuilder(
@@ -51,25 +54,18 @@ class MainActivity : AppCompatActivity() {
         val rvCategory = findViewById<RecyclerView>(R.id.rv_category_list)
         val fabCreateExpense = findViewById<FloatingActionButton>(R.id.fab_create_expense)
 
-        fabCreateExpense.setOnClickListener{
-            val createExpenseBottomSheet = CreateExpenseBottomSheet (
-                categories
-            ){expenseToBeCreated ->
-
-            }
-
-            createExpenseBottomSheet.show(
-                supportFragmentManager,
-                "createExpenseBottomSheet"
-            )
+        fabCreateExpense.setOnClickListener {
+            showCreateUpdateExpenseBottomSheet()
         }
 
-        val expenseAdapter = ExpenseListAdapter()
+        expenseAdapter.setOnCLickListener {expense ->
+            showCreateUpdateExpenseBottomSheet(expense)
+        }
 
         categoryAdapter.setOnClickListener { selected ->
 
             if (selected.name == "+") {
-                val createCategoryBottomSheet = CreateCategoryBottomSheet{categoryName ->
+                val createCategoryBottomSheet = CreateCategoryBottomSheet { categoryName ->
                     val categoryEntity = CategoryEntity(
                         name = categoryName,
                         isSelected = false
@@ -90,7 +86,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 val expenseTemp =
-                    if (selected.name != "All") {
+                    if (selected.name != "ALL") {
                         expenses.filter { it.category == selected.name }
                     } else {
                         expenses
@@ -107,48 +103,49 @@ class MainActivity : AppCompatActivity() {
         }
 
         rvExpense.adapter = expenseAdapter
-        getExpensesFromDataBase(expenseAdapter)
 
+        GlobalScope.launch(Dispatchers.IO) {
+            getExpensesFromDataBase()
+        }
     }
 
     private fun getCategoriesFromDataBase() {
-            val categoriesFromDb: List<CategoryEntity> = categoryDao.getAllCategories()
-            val categoriesUiData = categoriesFromDb.map {
-                CategoryUiData(
-                    name = it.name,
-                    isSelected = it.isSelected
-                )
-            }
-
-                .toMutableList()
-
-            categoriesUiData.add(
-                CategoryUiData(
-                    name = "+",
-                    isSelected = false
-                )
+        val categoriesFromDb: List<CategoryEntity> = categoryDao.getAllCategories()
+        val categoriesUiData = categoriesFromDb.map {
+            CategoryUiData(
+                name = it.name,
+                isSelected = it.isSelected
             )
+        }
+
+            .toMutableList()
+
+        categoriesUiData.add(
+            CategoryUiData(
+                name = "+",
+                isSelected = false
+            )
+        )
         GlobalScope.launch(Dispatchers.Main) {
             categories = categoriesUiData
             categoryAdapter.submitList(categoriesUiData)
         }
     }
 
-    private fun getExpensesFromDataBase(adapter: ExpenseListAdapter) {
-        GlobalScope.launch(Dispatchers.IO) {
-            val expensesFromDb: List<ExpenseEntity> = expenseDao.getAllExpenses()
-            val expenseUiData = expensesFromDb.map {
-                ExpenseUiData(
-                    name = it.name,
-                    category = it.category,
-                    amount = it.amount
-                )
-            }
+    private fun getExpensesFromDataBase() {
+        val expensesFromDb: List<ExpenseEntity> = expenseDao.getAllExpenses()
+        val expenseUiData = expensesFromDb.map {
+            ExpenseUiData(
+                id = it.id,
+                name = it.name,
+                category = it.category,
+                amount = it.amount
+            )
+        }
 
-            GlobalScope.launch (Dispatchers.IO){
-                expenses = expenseUiData
-                adapter.submitList(expenseUiData)
-            }
+        GlobalScope.launch(Dispatchers.IO) {
+            expenses = expenseUiData
+            expenseAdapter.submitList(expenseUiData)
         }
     }
 
@@ -158,6 +155,35 @@ class MainActivity : AppCompatActivity() {
             getCategoriesFromDataBase()
         }
     }
+
+    private fun insertExpense(expenseEntity: ExpenseEntity) {
+        GlobalScope.launch(Dispatchers.IO) {
+            expenseDao.insert(expenseEntity)
+            getExpensesFromDataBase()
+        }
+    }
+
+    private fun showCreateUpdateExpenseBottomSheet(expenseUiData: ExpenseUiData? = null) {
+
+        val createExpenseBottomSheet = CreateOrUpdateExpenseBottomSheet(
+            expense = expenseUiData,
+            categoryList = categories
+        ) { expenseToBeCreated ->
+            val expenseEntityToBeInsert = ExpenseEntity(
+                name = expenseToBeCreated.name,
+                category = expenseToBeCreated.category,
+                amount = expenseToBeCreated.amount
+            )
+            insertExpense(expenseEntityToBeInsert)
+        }
+
+        createExpenseBottomSheet.show(
+            supportFragmentManager,
+            "createExpenseBottomSheet"
+        )
+
+    }
+
 }
 
 

@@ -9,33 +9,42 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 
 class ExpenseListAdapter :
-    ListAdapter<ExpenseUiData, ExpenseListAdapter.ViewHolderExpense>(ExpenseDiffUtil()) {
+    ListAdapter<ExpenseUiData, ExpenseListAdapter.ExpenseViewHolder>(ExpenseListAdapter) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolderExpense {
+    private lateinit var callback: (ExpenseUiData) -> Unit
+    fun setOnCLickListener(onClick: (ExpenseUiData)-> Unit){
+        callback = onClick
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExpenseViewHolder {
         val view = LayoutInflater
             .from(parent.context)
             .inflate(R.layout.item_expense, parent, false)
 
-        return ViewHolderExpense(view)
+        return ExpenseViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: ViewHolderExpense, position: Int) {
+    override fun onBindViewHolder(holder: ExpenseViewHolder, position: Int) {
         val expense = getItem(position)
-        holder.bind(expense)
+        holder.bind(expense, callback)
     }
 
-    class ViewHolderExpense(private val view: View) : RecyclerView.ViewHolder(view) {
+    class ExpenseViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
         val tvTittle = view.findViewById<TextView>(R.id.tv_expense_tittle)
         val tvAmount = view.findViewById<TextView>(R.id.tv_expense_amount)
 
-        fun bind(expenseUiData: ExpenseUiData) {
-            val formattedAmount = " -R$ ${expenseUiData.amount.toString().replace(".", ",")}"
-            tvTittle.text = expenseUiData.category
+        fun bind(expense: ExpenseUiData, callback: (ExpenseUiData) -> Unit ) {
+            val formattedAmount = " -R$ ${expense.amount.toString().replace(".", ",")}"
+            tvTittle.text = expense.name
             tvAmount.text = formattedAmount
+
+            view.setOnClickListener{
+                callback.invoke(expense)
+            }
         }
     }
 
-    class ExpenseDiffUtil : ItemCallback<ExpenseUiData>() {
+    companion object ExpenseDiffUtil : ItemCallback<ExpenseUiData>() {
         override fun areItemsTheSame(oldItem: ExpenseUiData, newItem: ExpenseUiData): Boolean {
             return oldItem == newItem
         }
@@ -43,7 +52,5 @@ class ExpenseListAdapter :
         override fun areContentsTheSame(oldItem: ExpenseUiData, newItem: ExpenseUiData): Boolean {
             return oldItem.category == newItem.category
         }
-
     }
-
 }
