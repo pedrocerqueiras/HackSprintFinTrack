@@ -2,20 +2,21 @@ package com.example.fintrack.data.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.example.fintrack.data.CategoryEntity
 
 @Dao
 interface CategoryDao {
-    @Insert
-    suspend fun insert(category: CategoryEntity)
 
-    @Update
-    suspend fun update(category: CategoryEntity)
+    @Query("SELECT * FROM categoryentity")
+    fun getAllCategories(): List<CategoryEntity>
 
-    @Query("SELECT * FROM categories")
-    suspend fun getAllCategories(): List<CategoryEntity>
+    @Insert (onConflict = OnConflictStrategy.REPLACE)
+    fun insertAll (categoryEntity: List<CategoryEntity>)
 
-    //outros métodos de acesso
+    @Insert (onConflict = OnConflictStrategy.REPLACE)
+    fun insert (categoryEntity: CategoryEntity)
+
 }
