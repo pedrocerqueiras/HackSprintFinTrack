@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase
 import com.example.fintrack.data.dao.CategoryDao
 import com.example.fintrack.data.dao.ExpenseDao
 
-@Database([CategoryEntity::class, ExpenseEntity::class], version = 1)
+@Database([CategoryEntity::class, ExpenseEntity::class], version = 2)
 abstract class FinTrackDataBase: RoomDatabase() {
 
     abstract fun getCategoryDao(): CategoryDao

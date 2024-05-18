@@ -25,6 +25,7 @@ import kotlinx.coroutines.launch
 class MainActivity : AppCompatActivity() {
 
     private var categories = listOf<CategoryUiData>()
+    private var categoriesEntity = listOf<CategoryEntity>()
     private var expenses = listOf<ExpenseUiData>()
 
     private val categoryAdapter = CategoryListAdapter()
@@ -59,13 +60,13 @@ class MainActivity : AppCompatActivity() {
             showCreateUpdateExpenseBottomSheet()
         }
 
-        expenseAdapter.setOnCLickListener {expense ->
+        expenseAdapter.setOnCLickListener { expense ->
             showCreateUpdateExpenseBottomSheet(expense)
         }
 
-        categoryAdapter.setOnLongClickListener {categoryToBeDeleted ->
+        categoryAdapter.setOnLongClickListener { categoryToBeDeleted ->
 
-            if (categoryToBeDeleted.name != "+") {
+            if (categoryToBeDeleted.name != "+" && categoryToBeDeleted.name != "ALL") {
 
                 val title: String = this.getString(R.string.category_delete_title)
                 val description: String = this.getString(R.string.category_delete_description)
@@ -75,7 +76,7 @@ class MainActivity : AppCompatActivity() {
                     title,
                     description,
                     btnText,
-                ){
+                ) {
                     val categoryEntityToBeDeleted = CategoryEntity(
                         categoryToBeDeleted.name,
                         categoryToBeDeleted.isSelected
@@ -102,20 +103,30 @@ class MainActivity : AppCompatActivity() {
 
                 val categoryTemp = categories.map { item ->
                     when {
-                        item.name == selected.name && !item.isSelected -> item.copy(isSelected = true)
-                        item.name == selected.name && item.isSelected -> item.copy(isSelected = false)
+                        item.name == selected.name && item.isSelected -> item.copy(
+                            isSelected = true
+                        )
+
+                        item.name == selected.name && !item.isSelected -> item.copy(
+                            isSelected = true
+                        )
+
+                        item.name != selected.name && item.isSelected -> item.copy(
+                            isSelected = false
+                        )
+
                         else -> item
                     }
                 }
 
-                val expenseTemp =
                     if (selected.name != "ALL") {
-                        expenses.filter { it.category == selected.name }
+                        filterExpenseByCategoryName(selected.name)
                     } else {
-                        expenses
+                        GlobalScope.launch (Dispatchers.IO){
+                            getExpensesFromDataBase()
+                        }
                     }
 
-                expenseAdapter.submitList(expenseTemp)
                 categoryAdapter.submitList(categoryTemp)
             }
         }
@@ -153,6 +164,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun getCategoriesFromDataBase() {
         val categoriesFromDb: List<CategoryEntity> = categoryDao.getAllCategories()
+        categoriesEntity = categoriesFromDb
         val categoriesUiData = categoriesFromDb.map {
             CategoryUiData(
                 name = it.name,
@@ -168,9 +180,17 @@ class MainActivity : AppCompatActivity() {
                 isSelected = false
             )
         )
+        val categoryListTemp = mutableListOf(
+            CategoryUiData(
+                name = "ALL",
+                isSelected = true
+            )
+        )
+
+        categoryListTemp.addAll(categoriesUiData)
         GlobalScope.launch(Dispatchers.Main) {
-            categories = categoriesUiData
-            categoryAdapter.submitList(categoriesUiData)
+            categories = categoryListTemp
+            categoryAdapter.submitList(categories)
         }
     }
 
@@ -185,7 +205,7 @@ class MainActivity : AppCompatActivity() {
             )
         }
 
-        GlobalScope.launch(Dispatchers.IO) {
+        GlobalScope.launch(Dispatchers.Main) {
             expenses = expenseUiData
             expenseAdapter.submitList(expenseUiData)
         }
@@ -205,34 +225,56 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun updateExpense (expenseEntity: ExpenseEntity){
-        GlobalScope.launch (Dispatchers.IO){
+    private fun updateExpense(expenseEntity: ExpenseEntity) {
+        GlobalScope.launch(Dispatchers.IO) {
             expenseDao.update(expenseEntity)
             getExpensesFromDataBase()
         }
     }
 
-    private fun deleteExpense (expenseEntity: ExpenseEntity){
-        GlobalScope.launch (Dispatchers.IO){
+    private fun deleteExpense(expenseEntity: ExpenseEntity) {
+        GlobalScope.launch(Dispatchers.IO) {
             expenseDao.delete(expenseEntity)
             getExpensesFromDataBase()
         }
     }
 
-    private fun deleteCategory (categoryEntity: CategoryEntity){
-        GlobalScope.launch (Dispatchers.IO){
+    private fun deleteCategory(categoryEntity: CategoryEntity) {
+        GlobalScope.launch(Dispatchers.IO) {
+            val expensesToBeDeleted = expenseDao.getAllByCategoryName(categoryEntity.name)
+            expenseDao.deleteAll(expensesToBeDeleted)
             categoryDao.delete(categoryEntity)
             getCategoriesFromDataBase()
+            getExpensesFromDataBase()
         }
     }
 
+    private fun filterExpenseByCategoryName(category: String) {
+        GlobalScope.launch(Dispatchers.IO) {
+
+            val expensesFromDb: List<ExpenseEntity> = expenseDao.getAllByCategoryName(category)
+            val expenseUiData = expensesFromDb.map {
+                ExpenseUiData(
+                    id = it.id,
+                    name = it.name,
+                    category = it.category,
+                    amount = it.amount
+                )
+            }
+
+            GlobalScope.launch(Dispatchers.Main) {
+                expenses = expenseUiData
+                expenseAdapter.submitList(expenseUiData)
+            }
+        }
+    }
 
 
     private fun showCreateUpdateExpenseBottomSheet(expenseUiData: ExpenseUiData? = null) {
 
         val createExpenseBottomSheet = CreateOrUpdateExpenseBottomSheet(
             expense = expenseUiData,
-            categoryList = categories,
+            categoryList = categoriesEntity,
             onCreateClicked = { expenseToBeCreated ->
                 val expenseEntityToBeInsert = ExpenseEntity(
                     name = expenseToBeCreated.name,
@@ -242,7 +284,7 @@ class MainActivity : AppCompatActivity() {
                 insertExpense(expenseEntityToBeInsert)
 
             },
-            onUpdateClicked = {expenseToBeUpdated ->
+            onUpdateClicked = { expenseToBeUpdated ->
                 val expenseEntityToBeUpdate = ExpenseEntity(
                     id = expenseToBeUpdated.id,
                     name = expenseToBeUpdated.name,
@@ -251,7 +293,7 @@ class MainActivity : AppCompatActivity() {
                 )
                 updateExpense(expenseEntityToBeUpdate)
             },
-            onDeleteClicked = {expenseToBeDeleted ->
+            onDeleteClicked = { expenseToBeDeleted ->
                 val expenseEntityToBeDeleted = ExpenseEntity(
                     id = expenseToBeDeleted.id,
                     name = expenseToBeDeleted.name,
