@@ -1,6 +1,7 @@
-package com.example.fintrack.ui.category
+package com.example.fintrack.ui.expense
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,8 +10,8 @@ import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.Spinner
 import android.widget.TextView
-import com.example.fintrack.CategoryUiData
-import com.example.fintrack.ExpenseUiData
+import androidx.core.view.isVisible
+import com.example.fintrack.ui.category.CategoryUiData
 import com.example.fintrack.R
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.snackbar.Snackbar
@@ -20,7 +21,8 @@ class CreateOrUpdateExpenseBottomSheet(
     private val categoryList: List<CategoryUiData>,
     private val expense: ExpenseUiData? = null,
     private val onCreateClicked: (ExpenseUiData) -> Unit,
-    private val onUpdateClicked: (ExpenseUiData) -> Unit
+    private val onUpdateClicked: (ExpenseUiData) -> Unit,
+    private val onDeleteClicked: (ExpenseUiData) -> Unit
 ) : BottomSheetDialogFragment() {
 
     override fun onCreateView(
@@ -31,7 +33,8 @@ class CreateOrUpdateExpenseBottomSheet(
         val view = inflater.inflate(R.layout.create_or_update_expense_bottom_sheet, container)
 
         val tvTitle = view.findViewById<TextView>(R.id.tv_title)
-        val btnCreate = view.findViewById<Button>(R.id.btn_expense_create)
+        val btnCreateOrUpdate = view.findViewById<Button>(R.id.btn_expense_create_or_update)
+        val btnDelete = view.findViewById<Button>(R.id.btn_expense_delete)
         val tieExpenseName = view.findViewById<TextInputEditText>(R.id.tie_expense_name)
         val spinner: Spinner = view.findViewById(R.id.sp_expense_list)
 
@@ -65,21 +68,33 @@ class CreateOrUpdateExpenseBottomSheet(
         }
 
         if (expense == null) {
+            btnDelete.isVisible = false
             tvTitle.setText(R.string.add_expense_title)
-            btnCreate.setText(R.string.add)
+            btnCreateOrUpdate.setText(R.string.add)
         } else {
             tvTitle.setText(R.string.update_expense_title)
-            btnCreate.setText(R.string.update)
+            btnCreateOrUpdate.setText(R.string.update)
             tieExpenseName.setText(expense.name)
+            btnDelete.isVisible = true
 
             val currentCategory = categoryList.first { it.name == expense.category }
             val index = categoryList.indexOf(currentCategory)
             spinner.setSelection(index)
         }
 
-        btnCreate.setOnClickListener {
-            val name = tieExpenseName.text.toString()
-            if (expenseCategory != null) {
+        btnDelete.setOnClickListener{
+            if (expense != null){
+                onDeleteClicked.invoke(expense)
+                dismiss()
+            }else{
+                Log.d("CreateOrUpdateExpense", "Expense not found")
+            }
+
+        }
+
+        btnCreateOrUpdate.setOnClickListener {
+            val name = tieExpenseName.text.toString().trim()
+            if (expenseCategory != null && name.isNotEmpty()) {
 
                 requireNotNull(expenseCategory)
 
@@ -105,7 +120,7 @@ class CreateOrUpdateExpenseBottomSheet(
                 }
                 dismiss()
             } else {
-                Snackbar.make(btnCreate, "Please select a category", Snackbar.LENGTH_LONG).show()
+                Snackbar.make(btnCreateOrUpdate, "Please select a category", Snackbar.LENGTH_LONG).show()
             }
         }
         return view

@@ -1,4 +1,4 @@
-package com.example.fintrack
+package com.example.fintrack.ui.category
 
 data class CategoryUiData(
     val name: String,

@@ -1,4 +1,4 @@
-package com.example.fintrack
+package com.example.fintrack.ui.expense
 
 data class ExpenseUiData(
     val id: Long,
