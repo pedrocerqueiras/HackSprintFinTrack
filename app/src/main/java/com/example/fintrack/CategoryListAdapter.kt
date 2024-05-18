@@ -7,6 +7,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.fintrack.ui.category.CategoryUiData
 
 class CategoryListAdapter :
     ListAdapter<CategoryUiData, CategoryListAdapter.CategoryViewHolder>(CategoryListAdapter) {
@@ -14,8 +15,14 @@ class CategoryListAdapter :
 
     private lateinit var onClick: (CategoryUiData) -> Unit
 
+    private lateinit var onLongClick: (CategoryUiData) -> Unit
+
     fun setOnClickListener(onClick: (CategoryUiData) -> Unit) {
         this.onClick = onClick
+    }
+
+    fun setOnLongClickListener(onLongClick: (CategoryUiData) -> Unit){
+        this.onLongClick = onLongClick
     }
 
 
@@ -29,18 +36,27 @@ class CategoryListAdapter :
 
     override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {
         val category = getItem(position)
-        holder.bind(category, onClick)
+        holder.bind(category, onClick, onLongClick)
     }
 
     class CategoryViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
         val tvCategory = view.findViewById<TextView>(R.id.tv_category)
 
-        fun bind(categoryUiData: CategoryUiData, onClick: (CategoryUiData) -> Unit) {
-            tvCategory.text = categoryUiData.name
-            tvCategory.isSelected = categoryUiData.isSelected
+        fun bind(
+            category: CategoryUiData,
+            onClick: (CategoryUiData) -> Unit,
+            onLongClickListener: (CategoryUiData) -> Unit
+        ) {
+            tvCategory.text = category.name
+            tvCategory.isSelected = category.isSelected
 
             view.setOnClickListener {
-                onClick.invoke(categoryUiData)
+                onClick.invoke(category)
+            }
+
+            view.setOnLongClickListener{
+                onLongClickListener.invoke(category)
+                true
             }
         }
     }

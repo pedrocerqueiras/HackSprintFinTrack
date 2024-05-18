@@ -3,5 +3,8 @@
     <string name="add_expense_title">Add Expense</string>
     <string name="add">Add</string>
     <string name="update_expense_title">Update Expense</string>
+    <string name="category_delete_title">Important</string>
+    <string name="category_delete_description">By deleting a category you will delete all tasks with this category, are you sure?</string>
     <string name="update">Update</string>
+    <string name="delete">Delete</string>
 </resources>

@@ -5,9 +5,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.room.Room
 import com.example.fintrack.CategoryListAdapter
-import com.example.fintrack.CategoryUiData
+import com.example.fintrack.ui.category.CategoryUiData
 import com.example.fintrack.ExpenseListAdapter
-import com.example.fintrack.ExpenseUiData
+import com.example.fintrack.ui.expense.ExpenseUiData
 import com.example.fintrack.R
 import com.example.fintrack.data.CategoryEntity
 import com.example.fintrack.data.ExpenseEntity
@@ -15,7 +15,8 @@ import com.example.fintrack.data.FinTrackDataBase
 import com.example.fintrack.data.dao.CategoryDao
 import com.example.fintrack.data.dao.ExpenseDao
 import com.example.fintrack.ui.category.CreateCategoryBottomSheet
-import com.example.fintrack.ui.category.CreateOrUpdateExpenseBottomSheet
+import com.example.fintrack.ui.category.InfoBottomSheet
+import com.example.fintrack.ui.expense.CreateOrUpdateExpenseBottomSheet
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -60,6 +61,28 @@ class MainActivity : AppCompatActivity() {
 
         expenseAdapter.setOnCLickListener {expense ->
             showCreateUpdateExpenseBottomSheet(expense)
+        }
+
+        categoryAdapter.setOnLongClickListener {categoryToBeDeleted ->
+
+            if (categoryToBeDeleted.name != "+") {
+
+                val title: String = this.getString(R.string.category_delete_title)
+                val description: String = this.getString(R.string.category_delete_description)
+                val btnText: String = this.getString(R.string.delete)
+
+                showInfoDialog(
+                    title,
+                    description,
+                    btnText,
+                ){
+                    val categoryEntityToBeDeleted = CategoryEntity(
+                        categoryToBeDeleted.name,
+                        categoryToBeDeleted.isSelected
+                    )
+                    deleteCategory(categoryEntityToBeDeleted)
+                }
+            }
         }
 
         categoryAdapter.setOnClickListener { selected ->
@@ -107,6 +130,25 @@ class MainActivity : AppCompatActivity() {
         GlobalScope.launch(Dispatchers.IO) {
             getExpensesFromDataBase()
         }
+    }
+
+    private fun showInfoDialog(
+        title: String,
+        description: String,
+        btnText: String,
+        onClick: () -> Unit
+    ) {
+        val infoBottomSheet = InfoBottomSheet(
+            title = title,
+            description = description,
+            btnText = btnText,
+            onClick
+        )
+
+        infoBottomSheet.show(
+            supportFragmentManager,
+            "infoBottomSheet"
+        )
     }
 
     private fun getCategoriesFromDataBase() {
@@ -170,6 +212,22 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun deleteExpense (expenseEntity: ExpenseEntity){
+        GlobalScope.launch (Dispatchers.IO){
+            expenseDao.delete(expenseEntity)
+            getExpensesFromDataBase()
+        }
+    }
+
+    private fun deleteCategory (categoryEntity: CategoryEntity){
+        GlobalScope.launch (Dispatchers.IO){
+            categoryDao.delete(categoryEntity)
+            getCategoriesFromDataBase()
+        }
+    }
+
+
+
     private fun showCreateUpdateExpenseBottomSheet(expenseUiData: ExpenseUiData? = null) {
 
         val createExpenseBottomSheet = CreateOrUpdateExpenseBottomSheet(
@@ -192,7 +250,15 @@ class MainActivity : AppCompatActivity() {
                     amount = expenseToBeUpdated.amount
                 )
                 updateExpense(expenseEntityToBeUpdate)
-
+            },
+            onDeleteClicked = {expenseToBeDeleted ->
+                val expenseEntityToBeDeleted = ExpenseEntity(
+                    id = expenseToBeDeleted.id,
+                    name = expenseToBeDeleted.name,
+                    category = expenseToBeDeleted.category,
+                    amount = expenseToBeDeleted.amount
+                )
+                deleteExpense(expenseEntityToBeDeleted)
             }
         )
         createExpenseBottomSheet.show(
