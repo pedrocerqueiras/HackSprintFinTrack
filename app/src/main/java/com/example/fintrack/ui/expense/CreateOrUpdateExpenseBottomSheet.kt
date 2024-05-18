@@ -13,12 +13,13 @@ import android.widget.TextView
 import androidx.core.view.isVisible
 import com.example.fintrack.ui.category.CategoryUiData
 import com.example.fintrack.R
+import com.example.fintrack.data.CategoryEntity
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 
 class CreateOrUpdateExpenseBottomSheet(
-    private val categoryList: List<CategoryUiData>,
+    private val categoryList: List<CategoryEntity>,
     private val expense: ExpenseUiData? = null,
     private val onCreateClicked: (ExpenseUiData) -> Unit,
     private val onUpdateClicked: (ExpenseUiData) -> Unit,
@@ -38,10 +39,12 @@ class CreateOrUpdateExpenseBottomSheet(
         val tieExpenseName = view.findViewById<TextInputEditText>(R.id.tie_expense_name)
         val spinner: Spinner = view.findViewById(R.id.sp_expense_list)
 
-        val expenseStr: List<String> = categoryList.map { it.name }
         var expenseCategory: String? = null
-
-
+        val categoryListTemp = mutableListOf("Select")
+        categoryListTemp.addAll(
+            categoryList.map { it.name }
+        )
+        val expenseStr: List<String> = categoryListTemp
 
         ArrayAdapter(
             requireActivity().baseContext,
@@ -94,7 +97,7 @@ class CreateOrUpdateExpenseBottomSheet(
 
         btnCreateOrUpdate.setOnClickListener {
             val name = tieExpenseName.text.toString().trim()
-            if (expenseCategory != null && name.isNotEmpty()) {
+            if (expenseCategory != "Select" && name.isNotEmpty()) {
 
                 requireNotNull(expenseCategory)
 
