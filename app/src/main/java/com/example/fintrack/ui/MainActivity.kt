@@ -1,8 +1,10 @@
 package com.example.fintrack.ui
 
+import android.graphics.Color
 import android.os.Bundle
 import android.widget.Button
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
@@ -34,10 +36,14 @@ class MainActivity : AppCompatActivity() {
     private lateinit var rvCategory: RecyclerView
     private lateinit var ctnEmptyView: LinearLayout
     private lateinit var fabCreateExpense: FloatingActionButton
+    private lateinit var tvSubTitleMain: TextView
+    private lateinit var tvTotalExpenses: TextView
 
     private val categoryAdapter = CategoryListAdapter()
     private val expenseAdapter by lazy {
-        ExpenseListAdapter()
+        ExpenseListAdapter { expense ->
+            showCreateUpdateExpenseBottomSheet(expense)
+        }
     }
 
     private val db by lazy {
@@ -61,6 +67,8 @@ class MainActivity : AppCompatActivity() {
 
         ctnEmptyView = findViewById(R.id.ll_empty_view)
         rvCategory = findViewById(R.id.rv_category_list)
+        tvSubTitleMain = findViewById(R.id.tv_title_main)
+        tvTotalExpenses = findViewById(R.id.tv_total_expenses)
         fabCreateExpense = findViewById(R.id.fab_create_expense)
         val btnCreateEmpty = findViewById<Button>(R.id.btn_create_empty)
         val rvExpense = findViewById<RecyclerView>(R.id.rv_expense_list)
@@ -71,10 +79,6 @@ class MainActivity : AppCompatActivity() {
 
         fabCreateExpense.setOnClickListener {
             showCreateUpdateExpenseBottomSheet()
-        }
-
-        expenseAdapter.setOnCLickListener { expense ->
-            showCreateUpdateExpenseBottomSheet(expense)
         }
 
         categoryAdapter.setOnLongClickListener { categoryToBeDeleted ->
@@ -92,7 +96,9 @@ class MainActivity : AppCompatActivity() {
                 ) {
                     val categoryEntityToBeDeleted = CategoryEntity(
                         categoryToBeDeleted.name,
-                        categoryToBeDeleted.isSelected
+                        categoryToBeDeleted.isSelected,
+                        categoryToBeDeleted.icon,
+                        categoryToBeDeleted.color
                     )
                     deleteCategory(categoryEntityToBeDeleted)
                 }
@@ -175,10 +181,14 @@ class MainActivity : AppCompatActivity() {
             if (categoriesEntity.isEmpty()) {
                 rvCategory.isVisible = false
                 fabCreateExpense.isVisible = false
+                tvSubTitleMain.isVisible = false
                 ctnEmptyView.isVisible = true
+                tvTotalExpenses.isVisible = false
             } else {
                 rvCategory.isVisible = true
+                tvTotalExpenses.isVisible = true
                 fabCreateExpense .isVisible = true
+                tvSubTitleMain .isVisible = true
                 ctnEmptyView.isVisible = false
             }
         }
@@ -186,22 +196,27 @@ class MainActivity : AppCompatActivity() {
         val categoriesUiData = categoriesFromDb.map {
             CategoryUiData(
                 name = it.name,
-                isSelected = it.isSelected
+                isSelected = it.isSelected,
+                icon = it.iconResId,
+                color = it.colorResId
             )
         }
-
             .toMutableList()
 
         categoriesUiData.add(
             CategoryUiData(
                 name = "+",
-                isSelected = false
+                isSelected = false,
+                icon = 0,
+                color = 0
             )
         )
         val categoryListTemp = mutableListOf(
             CategoryUiData(
                 name = "ALL",
-                isSelected = true
+                isSelected = true,
+                icon = 0,
+                color = 0
             )
         )
 
@@ -214,12 +229,17 @@ class MainActivity : AppCompatActivity() {
 
     private fun getExpensesFromDataBase() {
         val expensesFromDb: List<ExpenseEntity> = expenseDao.getAllExpenses()
+        val categoryMap = categoriesEntity.associateBy { it.name }
+
         val expenseUiData = expensesFromDb.map {
+            val category = categoryMap[it.category]
             ExpenseUiData(
                 id = it.id,
                 name = it.name,
                 category = it.category,
-                amount = it.amount
+                amount = it.amount,
+                iconResId = category?.iconResId ?: R.drawable.ic_graphic,
+                colorResId = category?.colorResId ?: Color.BLACK
             )
         }
 
@@ -276,7 +296,9 @@ class MainActivity : AppCompatActivity() {
                     id = it.id,
                     name = it.name,
                     category = it.category,
-                    amount = it.amount
+                    amount = it.amount,
+                    iconResId = 0,
+                    colorResId = 0
                 )
             }
 
@@ -286,7 +308,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
 
     private fun showCreateUpdateExpenseBottomSheet(expenseUiData: ExpenseUiData? = null) {
 
@@ -329,18 +350,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showCreateCategoryBottomSheet() {
-        val createCategoryBottomSheet = CreateCategoryBottomSheet { categoryName ->
+        val createCategoryBottomSheet = CreateCategoryBottomSheet { categoryName, iconRedId, colorResId ->
             val categoryEntity = CategoryEntity(
                 name = categoryName,
-                isSelected = false
+                isSelected = false,
+                iconResId = iconRedId,
+                colorResId = colorResId
             )
-
             insertCategory(categoryEntity)
-
         }
+
         createCategoryBottomSheet.show(supportFragmentManager, "createCategoryBottomSheet")
     }
-
 }
 
 

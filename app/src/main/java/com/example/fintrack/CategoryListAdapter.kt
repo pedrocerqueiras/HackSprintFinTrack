@@ -69,10 +69,7 @@ class CategoryListAdapter :
         override fun areContentsTheSame(oldItem: CategoryUiData, newItem: CategoryUiData): Boolean {
             return oldItem.name == newItem.name
         }
-
     }
-
-
 }
 
 
