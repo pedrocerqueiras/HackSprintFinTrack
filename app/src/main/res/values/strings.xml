@@ -7,4 +7,7 @@
     <string name="category_delete_description">By deleting a category you will delete all tasks with this category, are you sure?</string>
     <string name="update">Update</string>
     <string name="delete">Delete</string>
+    <string name="empty_category_title">No category found!</string>
+    <string name="empty_category_description">Please create a new one</string>
+    <string name="create">create</string>
 </resources>

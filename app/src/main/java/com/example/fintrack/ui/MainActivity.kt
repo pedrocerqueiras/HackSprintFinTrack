@@ -1,7 +1,10 @@
 package com.example.fintrack.ui
 
 import android.os.Bundle
+import android.widget.Button
+import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import androidx.room.Room
 import com.example.fintrack.CategoryListAdapter
@@ -28,6 +31,10 @@ class MainActivity : AppCompatActivity() {
     private var categoriesEntity = listOf<CategoryEntity>()
     private var expenses = listOf<ExpenseUiData>()
 
+    private lateinit var rvCategory: RecyclerView
+    private lateinit var ctnEmptyView: LinearLayout
+    private lateinit var fabCreateExpense: FloatingActionButton
+
     private val categoryAdapter = CategoryListAdapter()
     private val expenseAdapter by lazy {
         ExpenseListAdapter()
@@ -52,9 +59,15 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        ctnEmptyView = findViewById(R.id.ll_empty_view)
+        rvCategory = findViewById(R.id.rv_category_list)
+        fabCreateExpense = findViewById(R.id.fab_create_expense)
+        val btnCreateEmpty = findViewById<Button>(R.id.btn_create_empty)
         val rvExpense = findViewById<RecyclerView>(R.id.rv_expense_list)
-        val rvCategory = findViewById<RecyclerView>(R.id.rv_category_list)
-        val fabCreateExpense = findViewById<FloatingActionButton>(R.id.fab_create_expense)
+
+        btnCreateEmpty.setOnClickListener {
+            showCreateCategoryBottomSheet()
+        }
 
         fabCreateExpense.setOnClickListener {
             showCreateUpdateExpenseBottomSheet()
@@ -89,16 +102,7 @@ class MainActivity : AppCompatActivity() {
         categoryAdapter.setOnClickListener { selected ->
 
             if (selected.name == "+") {
-                val createCategoryBottomSheet = CreateCategoryBottomSheet { categoryName ->
-                    val categoryEntity = CategoryEntity(
-                        name = categoryName,
-                        isSelected = false
-                    )
-
-                    insertCategory(categoryEntity)
-
-                }
-                createCategoryBottomSheet.show(supportFragmentManager, "createCategoryBottomSheet")
+                showCreateCategoryBottomSheet()
             } else {
 
                 val categoryTemp = categories.map { item ->
@@ -119,13 +123,13 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
 
-                    if (selected.name != "ALL") {
-                        filterExpenseByCategoryName(selected.name)
-                    } else {
-                        GlobalScope.launch (Dispatchers.IO){
-                            getExpensesFromDataBase()
-                        }
+                if (selected.name != "ALL") {
+                    filterExpenseByCategoryName(selected.name)
+                } else {
+                    GlobalScope.launch(Dispatchers.IO) {
+                        getExpensesFromDataBase()
                     }
+                }
 
                 categoryAdapter.submitList(categoryTemp)
             }
@@ -165,6 +169,20 @@ class MainActivity : AppCompatActivity() {
     private fun getCategoriesFromDataBase() {
         val categoriesFromDb: List<CategoryEntity> = categoryDao.getAllCategories()
         categoriesEntity = categoriesFromDb
+
+        GlobalScope.launch(Dispatchers.Main) {
+
+            if (categoriesEntity.isEmpty()) {
+                rvCategory.isVisible = false
+                fabCreateExpense.isVisible = false
+                ctnEmptyView.isVisible = true
+            } else {
+                rvCategory.isVisible = true
+                fabCreateExpense .isVisible = true
+                ctnEmptyView.isVisible = false
+            }
+        }
+
         val categoriesUiData = categoriesFromDb.map {
             CategoryUiData(
                 name = it.name,
@@ -308,6 +326,19 @@ class MainActivity : AppCompatActivity() {
             "createExpenseBottomSheet"
         )
 
+    }
+
+    private fun showCreateCategoryBottomSheet() {
+        val createCategoryBottomSheet = CreateCategoryBottomSheet { categoryName ->
+            val categoryEntity = CategoryEntity(
+                name = categoryName,
+                isSelected = false
+            )
+
+            insertCategory(categoryEntity)
+
+        }
+        createCategoryBottomSheet.show(supportFragmentManager, "createCategoryBottomSheet")
     }
 
 }
