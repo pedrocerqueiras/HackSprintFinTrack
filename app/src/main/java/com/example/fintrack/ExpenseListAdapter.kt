@@ -3,55 +3,55 @@ package com.example.fintrack
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
-import androidx.recyclerview.widget.DiffUtil.ItemCallback
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fintrack.ui.expense.ExpenseUiData
 
-class ExpenseListAdapter :
-    ListAdapter<ExpenseUiData, ExpenseListAdapter.ExpenseViewHolder>(ExpenseListAdapter) {
+class ExpenseListAdapter(
+    private val onClick: (ExpenseUiData) -> Unit
+) : ListAdapter<ExpenseUiData, ExpenseListAdapter.ExpenseViewHolder>(ExpenseDiffCallback()) {
 
-    private lateinit var callback: (ExpenseUiData) -> Unit
-    fun setOnCLickListener(onClick: (ExpenseUiData)-> Unit){
-        callback = onClick
-    }
+    inner class ExpenseViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val tvExpenseTitle: TextView = itemView.findViewById(R.id.tv_expense_title)
+        private val tvExpenseAmount: TextView = itemView.findViewById(R.id.tv_expense_amount)
+        private val ivCategoryIcon: ImageView = itemView.findViewById(R.id.iv_category_icon)
+        private val viewCategoryColor: View = itemView.findViewById(R.id.view_category_color)
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExpenseViewHolder {
-        val view = LayoutInflater
-            .from(parent.context)
-            .inflate(R.layout.item_expense, parent, false)
+        fun bind(expense: ExpenseUiData) {
+            tvExpenseTitle.text = expense.name
+            tvExpenseAmount.text = "-R$%.2f".format(expense.amount)
 
-        return ExpenseViewHolder(view)
-    }
 
-    override fun onBindViewHolder(holder: ExpenseViewHolder, position: Int) {
-        val expense = getItem(position)
-        holder.bind(expense, callback)
-    }
+            ivCategoryIcon.setImageResource(expense.iconResId)
 
-    class ExpenseViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
-        val tvTittle = view.findViewById<TextView>(R.id.tv_expense_tittle)
-        val tvAmount = view.findViewById<TextView>(R.id.tv_expense_amount)
+            viewCategoryColor.setBackgroundColor(expense.colorResId)
 
-        fun bind(expense: ExpenseUiData, callback: (ExpenseUiData) -> Unit ) {
-            val formattedAmount = " -R$ ${expense.amount.toString().replace(".", ",")}"
-            tvTittle.text = expense.name
-            tvAmount.text = formattedAmount
-
-            view.setOnClickListener{
-                callback.invoke(expense)
+            itemView.setOnClickListener {
+                onClick(expense)
             }
         }
     }
 
-    companion object ExpenseDiffUtil : ItemCallback<ExpenseUiData>() {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExpenseViewHolder {
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_expense, parent, false)
+        return ExpenseViewHolder(view)
+    }
+
+    override fun onBindViewHolder(holder: ExpenseViewHolder, position: Int) {
+        holder.bind(getItem(position))
+    }
+
+    class ExpenseDiffCallback : DiffUtil.ItemCallback<ExpenseUiData>() {
         override fun areItemsTheSame(oldItem: ExpenseUiData, newItem: ExpenseUiData): Boolean {
-            return oldItem == newItem
+            return oldItem.id == newItem.id
         }
 
         override fun areContentsTheSame(oldItem: ExpenseUiData, newItem: ExpenseUiData): Boolean {
-            return oldItem.category == newItem.category
+            return oldItem == newItem
         }
     }
 }

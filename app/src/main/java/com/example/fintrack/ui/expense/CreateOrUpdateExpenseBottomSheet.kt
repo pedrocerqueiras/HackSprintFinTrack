@@ -37,6 +37,7 @@ class CreateOrUpdateExpenseBottomSheet(
         val btnCreateOrUpdate = view.findViewById<Button>(R.id.btn_expense_create_or_update)
         val btnDelete = view.findViewById<Button>(R.id.btn_expense_delete)
         val tieExpenseName = view.findViewById<TextInputEditText>(R.id.tie_expense_name)
+        val tieExpenseAmount = view.findViewById<TextInputEditText>(R.id.tie_expense_amount)
         val spinner: Spinner = view.findViewById(R.id.sp_expense_list)
 
         var expenseCategory: String? = null
@@ -78,6 +79,7 @@ class CreateOrUpdateExpenseBottomSheet(
             tvTitle.setText(R.string.update_expense_title)
             btnCreateOrUpdate.setText(R.string.update)
             tieExpenseName.setText(expense.name)
+            tieExpenseAmount.setText(expense.amount.toString())
             btnDelete.isVisible = true
 
             val currentCategory = categoryList.first { it.name == expense.category }
@@ -97,6 +99,8 @@ class CreateOrUpdateExpenseBottomSheet(
 
         btnCreateOrUpdate.setOnClickListener {
             val name = tieExpenseName.text.toString().trim()
+            val amount = tieExpenseAmount.text.toString().toFloatOrNull() ?: 0.0f
+
             if (expenseCategory != "Select" && name.isNotEmpty()) {
 
                 requireNotNull(expenseCategory)
@@ -108,7 +112,9 @@ class CreateOrUpdateExpenseBottomSheet(
                             id = 0,
                             name = name,
                             category = requireNotNull(expenseCategory),
-                            amount = Float.MIN_VALUE  //verificar
+                            amount = amount,
+                            iconResId = 0,
+                            colorResId = 0
                         )
                     )
                 } else {
@@ -117,7 +123,9 @@ class CreateOrUpdateExpenseBottomSheet(
                             id = expense.id,
                             name = name,
                             category = requireNotNull(expenseCategory),
-                            amount = Float.MIN_VALUE
+                            amount = amount,
+                            iconResId = 0,
+                            colorResId = 0
                         )
                     )
                 }

@@ -11,17 +11,17 @@
     tools:context=".ui.MainActivity">
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/tv_title_main"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
-        android:text="Total de Gastos"
+        android:text="@string/total_expenses"
         android:textSize="18dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/tv_valor_gasto"
+        android:id="@+id/tv_total_expenses"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="-3dp"
@@ -29,7 +29,7 @@
         android:textSize="30dp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_title_main" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_category_list"
@@ -40,7 +40,7 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_valor_gasto" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_total_expenses" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_expense_list"

@@ -11,7 +11,11 @@ data class CategoryEntity(
     @ColumnInfo("key")
     val name: String,
     @ColumnInfo ("is_selected")
-    val isSelected: Boolean
+    val isSelected: Boolean,
+    @ColumnInfo (name = "icon")
+    val iconResId: Int,
+    @ColumnInfo (name = "color")
+    val colorResId: Int
 )
 
 
