@@ -246,6 +246,8 @@ class MainActivity : AppCompatActivity() {
         GlobalScope.launch(Dispatchers.Main) {
             expenses = expenseUiData
             expenseAdapter.submitList(expenseUiData)
+
+            updateTotalExpenses() // Atualiza o total de despesas
         }
     }
 
@@ -307,6 +309,8 @@ class MainActivity : AppCompatActivity() {
             GlobalScope.launch(Dispatchers.Main) {
                 expenses = expenseUiData
                 expenseAdapter.submitList(expenseUiData)
+
+                updateTotalExpenses() // Atualiza o total de despesas
             }
         }
     }
@@ -363,6 +367,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         createCategoryBottomSheet.show(supportFragmentManager, "createCategoryBottomSheet")
+    }
+
+    private fun updateTotalExpenses() {
+        val total = expenses.sumOf { it.amount }
+        tvTotalExpenses.text = getString(R.string.value_total_expenses, total)
     }
 }
 

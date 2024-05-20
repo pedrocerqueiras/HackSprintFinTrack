@@ -19,5 +19,5 @@ data class ExpenseEntity(
     val id: Long = 0,
     val name: String,
     val category: String,
-    val amount: Float,
+    val amount: Double,
 )

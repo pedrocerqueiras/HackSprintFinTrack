@@ -99,7 +99,7 @@ class CreateOrUpdateExpenseBottomSheet(
 
         btnCreateOrUpdate.setOnClickListener {
             val name = tieExpenseName.text.toString().trim()
-            val amount = tieExpenseAmount.text.toString().toFloatOrNull() ?: 0.0f
+            val amount = tieExpenseAmount.text.toString().toDoubleOrNull() ?: 0.0
 
             if (expenseCategory != "Select" && name.isNotEmpty()) {
 
