@@ -198,7 +198,7 @@ class MainActivity : AppCompatActivity() {
                 name = it.name,
                 isSelected = it.isSelected,
                 icon = it.iconResId,
-                color = it.colorResId
+                color = it.color
             )
         }
             .toMutableList()
@@ -239,7 +239,7 @@ class MainActivity : AppCompatActivity() {
                 category = it.category,
                 amount = it.amount,
                 iconResId = category?.iconResId ?: R.drawable.ic_graphic,
-                colorResId = category?.colorResId ?: Color.BLACK
+                color = category?.color ?: Color.BLACK
             )
         }
 
@@ -287,18 +287,20 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+
     private fun filterExpenseByCategoryName(category: String) {
         GlobalScope.launch(Dispatchers.IO) {
-
             val expensesFromDb: List<ExpenseEntity> = expenseDao.getAllByCategoryName(category)
+            val categoryEntity = categoriesEntity.find { it.name == category }
+
             val expenseUiData = expensesFromDb.map {
                 ExpenseUiData(
                     id = it.id,
                     name = it.name,
                     category = it.category,
                     amount = it.amount,
-                    iconResId = 0,
-                    colorResId = 0
+                    iconResId = categoryEntity?.iconResId ?: R.drawable.ic_graphic,
+                    color = categoryEntity?.color ?: Color.BLACK
                 )
             }
 
@@ -350,12 +352,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showCreateCategoryBottomSheet() {
-        val createCategoryBottomSheet = CreateCategoryBottomSheet { categoryName, iconRedId, colorResId ->
+        val createCategoryBottomSheet = CreateCategoryBottomSheet { categoryName, iconRedId, color ->
             val categoryEntity = CategoryEntity(
                 name = categoryName,
                 isSelected = false,
                 iconResId = iconRedId,
-                colorResId = colorResId
+                color = color
             )
             insertCategory(categoryEntity)
         }

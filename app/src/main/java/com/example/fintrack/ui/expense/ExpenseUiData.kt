@@ -6,5 +6,5 @@ data class ExpenseUiData(
     val name: String,
     val amount: Float,
     val iconResId: Int,
-    var colorResId: Int
+    var color: Int
 )
