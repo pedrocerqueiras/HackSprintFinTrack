@@ -180,112 +180,112 @@
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_margin="8dp"
-                android:background="@color/white" />
+                android:background="@drawable/circle_white" />
 
             <View
                 android:id="@+id/color_black"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_margin="8dp"
-                android:background="@color/black" />
+                android:background="@drawable/circle_black" />
 
             <View
                 android:id="@+id/color_brown"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_margin="8dp"
-                android:background="@color/brown" />
+                android:background="@drawable/circle_brown" />
 
             <View
                 android:id="@+id/color_blue"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_margin="8dp"
-                android:background="@color/blue" />
+                android:background="@drawable/circle_blue" />
 
             <View
                 android:id="@+id/color_red"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_margin="8dp"
-                android:background="@color/red" />
+                android:background="@drawable/circle_red" />
 
             <View
                 android:id="@+id/color_green"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_margin="8dp"
-                android:background="@color/green" />
+                android:background="@drawable/circle_green" />
 
             <View
                 android:id="@+id/color_grey"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_margin="8dp"
-                android:background="@color/grey" />
+                android:background="@drawable/circle_grey" />
 
             <View
                 android:id="@+id/color_pink"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_margin="8dp"
-                android:background="@color/pink" />
+                android:background="@drawable/circle_pink" />
 
             <View
                 android:id="@+id/color_violet"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_margin="8dp"
-                android:background="@color/violet" />
+                android:background="@drawable/circle_violet" />
 
             <View
                 android:id="@+id/color_purple"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_margin="8dp"
-                android:background="@color/purple" />
+                android:background="@drawable/circle_purple" />
 
             <View
                 android:id="@+id/color_yellow"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_margin="8dp"
-                android:background="@color/medium_yellow" />
+                android:background="@drawable/circle_yellow" />
 
             <View
                 android:id="@+id/color_water_green"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_margin="8dp"
-                android:background="@color/water_green" />
+                android:background="@drawable/circle_water_green" />
 
             <View
                 android:id="@+id/color_orange"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_margin="8dp"
-                android:background="@color/medium_orange" />
+                android:background="@drawable/circle_orange" />
 
             <View
                 android:id="@+id/color_light_yellow"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_margin="8dp"
-                android:background="@color/light_yellow" />
+                android:background="@drawable/circle_light_yellow" />
 
             <View
                 android:id="@+id/color_light_orange"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_margin="8dp"
-                android:background="@color/light_orange" />
+                android:background="@drawable/circle_light_orange" />
 
             <View
                 android:id="@+id/color_ocean_blue"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_margin="8dp"
-                android:background="@color/ocean_blue" />
+                android:background="@drawable/circle_ocean_blue" />
 
         </GridLayout>
 

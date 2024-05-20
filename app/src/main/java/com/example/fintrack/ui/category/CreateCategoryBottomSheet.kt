@@ -1,5 +1,6 @@
 package com.example.fintrack.ui.category
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -18,6 +19,11 @@ class CreateCategoryBottomSheet(
 
     private var selectedIconId: Int? = null
     private var selectedColorId: Int? = null
+
+    private var selectedIconView: View? = null
+    private var selectedColorView: View? = null
+
+    private var previousColorBackground: Drawable? = null
 
 
     private val availableIconIds = listOf(
@@ -69,20 +75,33 @@ class CreateCategoryBottomSheet(
         for (i in 0 until iconContainer.childCount) {
             val iconView = iconContainer.getChildAt(i)
             iconView.setOnClickListener {
+                selectedIconView?.background = null
+
+                selectedIconView = iconView
                 selectedIconId = availableIconIds[i]
-                iconView.background = ContextCompat.getDrawable(requireContext(), R.drawable.baseline_check_24)
+                iconView.background =
+                    ContextCompat.getDrawable(requireContext(), R.drawable.filter_border_background)
             }
         }
+
 
         for (i in 0 until colorContainer.childCount) {
             val colorView = colorContainer.getChildAt(i)
             colorView.setOnClickListener {
+                // Restaura o plano de fundo da cor selecionada anteriormente
+                selectedColorView?.background = previousColorBackground
+
+                // Atualiza o selectedColorView e seu plano de fundo
+                selectedColorView = colorView
                 selectedColorId = availableColorIds[i]
+
+                // Armazena o plano de fundo atual antes de mudar para o plano de fundo selecionado
+                previousColorBackground = colorView.background
                 colorView.background = ContextCompat.getDrawable(requireContext(), R.drawable.baseline_check_24)
             }
         }
 
-        btnCreate.setOnClickListener{
+        btnCreate.setOnClickListener {
             val name = tieCategoryName.text.toString()
             if (name.isNotEmpty() && selectedIconId != null && selectedColorId != null) {
                 onCreateClicked.invoke(
@@ -92,7 +111,7 @@ class CreateCategoryBottomSheet(
                 )
                 dismiss()
 
-            }else{
+            } else {
                 Snackbar.make(btnCreate, "Please fill all fields", Snackbar.LENGTH_LONG).show()
             }
         }
