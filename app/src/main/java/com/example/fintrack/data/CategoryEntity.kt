@@ -15,7 +15,7 @@ data class CategoryEntity(
     @ColumnInfo (name = "icon")
     val iconResId: Int,
     @ColumnInfo (name = "color")
-    val colorResId: Int
+    val color: Int
 )
 
 

@@ -35,22 +35,22 @@ class CreateCategoryBottomSheet(
         R.drawable.ic_wifi
     )
     private val availableColorIds = listOf(
-        R.id.color_white,
-        R.id.color_black,
-        R.id.color_brown,
-        R.id.color_blue,
-        R.id.color_red,
-        R.id.color_green,
-        R.id.color_grey,
-        R.id.color_pink,
-        R.id.color_violet,
-        R.id.color_purple,
-        R.id.color_yellow,
-        R.id.color_water_green,
-        R.id.color_orange,
-        R.id.color_light_yellow,
-        R.id.color_light_orange,
-        R.id.color_ocean_blue
+        R.color.white,
+        R.color.black,
+        R.color.brown,
+        R.color.blue,
+        R.color.red,
+        R.color.green,
+        R.color.grey,
+        R.color.pink,
+        R.color.violet,
+        R.color.purple,
+        R.color.medium_yellow,
+        R.color.water_green,
+        R.color.medium_orange,
+        R.color.light_yellow,
+        R.color.light_orange,
+        R.color.ocean_blue
     )
 
     override fun onCreateView(
@@ -70,7 +70,7 @@ class CreateCategoryBottomSheet(
             val iconView = iconContainer.getChildAt(i)
             iconView.setOnClickListener {
                 selectedIconId = availableIconIds[i]
-
+                iconView.background = ContextCompat.getDrawable(requireContext(), R.drawable.baseline_check_24)
             }
         }
 
@@ -78,6 +78,7 @@ class CreateCategoryBottomSheet(
             val colorView = colorContainer.getChildAt(i)
             colorView.setOnClickListener {
                 selectedColorId = availableColorIds[i]
+                colorView.background = ContextCompat.getDrawable(requireContext(), R.drawable.baseline_check_24)
             }
         }
 

@@ -114,7 +114,7 @@ class CreateOrUpdateExpenseBottomSheet(
                             category = requireNotNull(expenseCategory),
                             amount = amount,
                             iconResId = 0,
-                            colorResId = 0
+                            color = 0
                         )
                     )
                 } else {
@@ -125,7 +125,7 @@ class CreateOrUpdateExpenseBottomSheet(
                             category = requireNotNull(expenseCategory),
                             amount = amount,
                             iconResId = 0,
-                            colorResId = 0
+                            color = 0
                         )
                     )
                 }
