@@ -16,4 +16,6 @@
     <string name="category_name_ex_creditcard">Category name: ex: Credit Card</string>
     <string name="select_the_category_color">Select the category color</string>
     <string name="category_icon">Category Icon</string>
+    <string name="value_total_expenses">R$ %1$.2f</string>
+    <string name="button_to_add_new_expenses">Button to add new expenses</string>
 </resources>

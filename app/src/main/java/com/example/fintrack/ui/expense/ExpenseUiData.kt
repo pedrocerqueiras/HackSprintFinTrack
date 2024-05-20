@@ -4,7 +4,7 @@ data class ExpenseUiData(
     val id: Long,
     val category: String,
     val name: String,
-    val amount: Float,
+    val amount: Double,
     val iconResId: Int,
     var color: Int
 )
