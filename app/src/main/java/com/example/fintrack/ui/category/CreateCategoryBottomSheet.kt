@@ -97,7 +97,8 @@ class CreateCategoryBottomSheet(
 
                 // Armazena o plano de fundo atual antes de mudar para o plano de fundo selecionado
                 previousColorBackground = colorView.background
-                colorView.background = ContextCompat.getDrawable(requireContext(), R.drawable.baseline_check_24)
+                colorView.background =
+                    ContextCompat.getDrawable(requireContext(), R.drawable.baseline_check_24)
             }
         }
 

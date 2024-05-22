@@ -187,8 +187,8 @@ class MainActivity : AppCompatActivity() {
             } else {
                 rvCategory.isVisible = true
                 tvTotalExpenses.isVisible = true
-                fabCreateExpense .isVisible = true
-                tvSubTitleMain .isVisible = true
+                fabCreateExpense.isVisible = true
+                tvSubTitleMain.isVisible = true
                 ctnEmptyView.isVisible = false
             }
         }
@@ -356,15 +356,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showCreateCategoryBottomSheet() {
-        val createCategoryBottomSheet = CreateCategoryBottomSheet { categoryName, iconRedId, color ->
-            val categoryEntity = CategoryEntity(
-                name = categoryName,
-                isSelected = false,
-                iconResId = iconRedId,
-                color = color
-            )
-            insertCategory(categoryEntity)
-        }
+        val createCategoryBottomSheet =
+            CreateCategoryBottomSheet { categoryName, iconRedId, color ->
+                val categoryEntity = CategoryEntity(
+                    name = categoryName,
+                    isSelected = false,
+                    iconResId = iconRedId,
+                    color = color
+                )
+                insertCategory(categoryEntity)
+            }
 
         createCategoryBottomSheet.show(supportFragmentManager, "createCategoryBottomSheet")
     }
@@ -374,7 +375,3 @@ class MainActivity : AppCompatActivity() {
         tvTotalExpenses.text = getString(R.string.value_total_expenses, total)
     }
 }
-
-
-
-

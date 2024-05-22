@@ -5,6 +5,27 @@
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
         <item name="android:windowFullscreen">true</item>
 
+        <!-- Primary branding color. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimaryVariant">@color/colorPrimaryDark</item>
+        <item name="colorOnPrimary">@color/colorWhite</item>
+
+        <!-- Secondary branding color. -->
+        <item name="colorSecondary">@color/colorAccent</item>
+        <item name="colorSecondaryVariant">@color/colorPrimaryLight</item>
+        <item name="colorOnSecondary">@color/colorBlack</item>
+
+        <!-- Background color. -->
+        <item name="android:windowBackground">@color/colorWhite</item>
+
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor">@color/colorPrimaryDark</item>
+
+        <!-- Navigation bar color. -->
+        <item name="android:navigationBarColor">@color/colorPrimary</item>
+
     </style>
 
     <style name="Theme.FinTrack" parent="Base.Theme.FinTrack" />

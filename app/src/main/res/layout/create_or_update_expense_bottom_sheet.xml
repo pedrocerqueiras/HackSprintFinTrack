@@ -20,6 +20,8 @@
         android:id="@+id/sp_expense_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:minHeight="48dp"
+
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp" />
@@ -35,7 +37,8 @@
             android:id="@+id/tie_expense_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Expense name: ex: Energy Bill"
+            android:maxLength="15"
+            android:hint="@string/expense_name_ex_energy_bill"
             android:minHeight="48dp" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -51,7 +54,8 @@
         android:id="@+id/tie_expense_amount"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Expense amount: ex: 100.50"
+        android:maxLength="7"
+        android:hint="@string/expense_amount_ex_100_50"
         android:inputType="numberDecimal"
         android:minHeight="48dp" />
 

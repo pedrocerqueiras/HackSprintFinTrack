@@ -49,10 +49,10 @@ class CreateOrUpdateExpenseBottomSheet(
 
         ArrayAdapter(
             requireActivity().baseContext,
-            android.R.layout.simple_spinner_item,
+            R.layout.spinner_item,
             expenseStr.toList()
         ).also { adapter ->
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_item)
+            adapter.setDropDownViewResource(R.layout.spinner_dropdown_item)
             spinner.adapter = adapter
         }
 
