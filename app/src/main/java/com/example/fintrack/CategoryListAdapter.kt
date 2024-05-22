@@ -22,7 +22,7 @@ class CategoryListAdapter :
         this.onClick = onClick
     }
 
-    fun setOnLongClickListener(onLongClick: (CategoryUiData) -> Unit){
+    fun setOnLongClickListener(onLongClick: (CategoryUiData) -> Unit) {
         this.onLongClick = onLongClick
     }
 
@@ -56,14 +56,14 @@ class CategoryListAdapter :
                 onClick.invoke(category)
             }
 
-            view.setOnLongClickListener{
+            view.setOnLongClickListener {
                 onLongClickListener.invoke(category)
                 true
             }
         }
     }
 
-    companion object CategoryDiffUtils: DiffUtil.ItemCallback<CategoryUiData>() {
+    companion object CategoryDiffUtils : DiffUtil.ItemCallback<CategoryUiData>() {
         override fun areItemsTheSame(oldItem: CategoryUiData, newItem: CategoryUiData): Boolean {
             return oldItem == newItem
         }
@@ -73,5 +73,3 @@ class CategoryListAdapter :
         }
     }
 }
-
-

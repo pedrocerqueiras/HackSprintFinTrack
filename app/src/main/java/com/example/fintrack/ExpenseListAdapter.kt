@@ -28,8 +28,12 @@ class ExpenseListAdapter(
 
             ivCategoryIcon.setImageResource(expense.iconResId)
 
-            viewCategoryColor.setBackgroundColor(ContextCompat.getColor(itemView.context, expense.color))
-
+            viewCategoryColor.setBackgroundColor(
+                ContextCompat.getColor(
+                    itemView.context,
+                    expense.color
+                )
+            )
 
             itemView.setOnClickListener {
                 onClick(expense)
