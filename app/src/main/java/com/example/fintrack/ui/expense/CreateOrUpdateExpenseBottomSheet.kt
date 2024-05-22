@@ -82,9 +82,12 @@ class CreateOrUpdateExpenseBottomSheet(
             tieExpenseAmount.setText(expense.amount.toString())
             btnDelete.isVisible = true
 
-            val currentCategory = categoryList.first { it.name == expense.category }
-            val index = categoryList.indexOf(currentCategory)
-            spinner.setSelection(index)
+
+            val currentCategoryIndex = categoryListTemp.indexOf(expense.category)
+            // Verifica se a categoria foi encontrada e ajusta a seleção do spinner
+            if (currentCategoryIndex != -1) {
+                spinner.setSelection(currentCategoryIndex)
+            }
         }
 
         btnDelete.setOnClickListener{

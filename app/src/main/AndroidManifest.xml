@@ -23,7 +23,6 @@
             </intent-filter>
         </activity>
 
-        <!-- Sua MainActivity -->
         <activity
             android:name=".ui.MainActivity"
             android:exported="true"

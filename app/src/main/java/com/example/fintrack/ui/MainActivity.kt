@@ -26,12 +26,16 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
 
     private var categories = listOf<CategoryUiData>()
     private var categoriesEntity = listOf<CategoryEntity>()
     private var expenses = listOf<ExpenseUiData>()
+
+    // Variável para armazenar a categoria selecionada atualmente
+    private var selectedCategory: String? = "ALL"
 
     private lateinit var rvCategory: RecyclerView
     private lateinit var ctnEmptyView: LinearLayout
@@ -106,6 +110,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         categoryAdapter.setOnClickListener { selected ->
+
+            // Atualiza a variável para a categoria selecionada
+            selectedCategory = selected.name
 
             if (selected.name == "+") {
                 showCreateCategoryBottomSheet()
@@ -228,26 +235,35 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getExpensesFromDataBase() {
-        val expensesFromDb: List<ExpenseEntity> = expenseDao.getAllExpenses()
-        val categoryMap = categoriesEntity.associateBy { it.name }
+        GlobalScope.launch(Dispatchers.IO) {
+            val expensesFromDb: List<ExpenseEntity> = expenseDao.getAllExpenses()
+            val categoryMap = categoriesEntity.associateBy { it.name }
 
-        val expenseUiData = expensesFromDb.map {
-            val category = categoryMap[it.category]
-            ExpenseUiData(
-                id = it.id,
-                name = it.name,
-                category = it.category,
-                amount = it.amount,
-                iconResId = category?.iconResId ?: R.drawable.ic_graphic,
-                color = category?.color ?: Color.BLACK
-            )
-        }
+            val expenseUiData = expensesFromDb.map {
+                val category = categoryMap[it.category]
+                ExpenseUiData(
+                    id = it.id,
+                    name = it.name,
+                    category = it.category,
+                    amount = it.amount,
+                    iconResId = category?.iconResId ?: R.drawable.ic_graphic,
+                    color = category?.color ?: Color.BLACK
+                )
+            }
+            // Certifica que a atualização da lista ocorra na thread principal
+            withContext(Dispatchers.Main) {
+                expenses = expenseUiData
+                expenseAdapter.submitList(expenseUiData)
 
-        GlobalScope.launch(Dispatchers.Main) {
-            expenses = expenseUiData
-            expenseAdapter.submitList(expenseUiData)
+                updateTotalExpenses() // Atualiza o total de despesas
 
-            updateTotalExpenses() // Atualiza o total de despesas
+                // Se a categoria selecionada não for "ALL", filtrar novamente
+                selectedCategory?.let { category ->
+                    if (category != "ALL") {
+                        filterExpenseByCategoryName(category)
+                    }
+                }
+            }
         }
     }
 
@@ -261,21 +277,25 @@ class MainActivity : AppCompatActivity() {
     private fun insertExpense(expenseEntity: ExpenseEntity) {
         GlobalScope.launch(Dispatchers.IO) {
             expenseDao.insert(expenseEntity)
-            getExpensesFromDataBase()
+
+            // Chama refreshExpensesForSelectedCategory na thread principal
+            withContext(Dispatchers.Main) {
+                refreshExpensesForSelectedCategory()
+            }
         }
     }
 
     private fun updateExpense(expenseEntity: ExpenseEntity) {
         GlobalScope.launch(Dispatchers.IO) {
             expenseDao.update(expenseEntity)
-            getExpensesFromDataBase()
+            refreshExpensesForSelectedCategory()
         }
     }
 
     private fun deleteExpense(expenseEntity: ExpenseEntity) {
         GlobalScope.launch(Dispatchers.IO) {
             expenseDao.delete(expenseEntity)
-            getExpensesFromDataBase()
+            refreshExpensesForSelectedCategory()
         }
     }
 
@@ -305,12 +325,12 @@ class MainActivity : AppCompatActivity() {
                     color = categoryEntity?.color ?: Color.BLACK
                 )
             }
-
-            GlobalScope.launch(Dispatchers.Main) {
+            // Certifica que a atualização da lista ocorra na thread principal
+            withContext(Dispatchers.Main) {
                 expenses = expenseUiData
                 expenseAdapter.submitList(expenseUiData)
 
-                updateTotalExpenses() // Atualiza o total de despesas
+                updateTotalExpenses()
             }
         }
     }
@@ -373,5 +393,18 @@ class MainActivity : AppCompatActivity() {
     private fun updateTotalExpenses() {
         val total = expenses.sumOf { it.amount }
         tvTotalExpenses.text = getString(R.string.value_total_expenses, total)
+    }
+
+    // Método para atualizar a lista de despesas com base na categoria selecionada
+    private fun refreshExpensesForSelectedCategory() {
+        selectedCategory?.let { category ->
+            if (category == "ALL") {
+                GlobalScope.launch(Dispatchers.IO) {
+                    getExpensesFromDataBase()
+                }
+            } else {
+                filterExpenseByCategoryName(category)
+            }
+        }
     }
 }
