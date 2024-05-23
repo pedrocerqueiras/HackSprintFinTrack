@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:fillViewport="true">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -33,6 +33,8 @@
                 android:id="@+id/tie_category_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:maxLength="16"
+                android:singleLine="true"
                 android:hint="@string/category_name_ex_creditcard"
                 android:minHeight="48dp" />
 
@@ -64,6 +66,7 @@
                 android:layout_height="48dp"
                 android:layout_margin="8dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/clickable_icon_of_a_car"
                 android:src="@drawable/ic_car" />
 
             <ImageView
@@ -72,6 +75,7 @@
                 android:layout_height="48dp"
                 android:layout_margin="8dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/clickable_icon_of_a_t_shirt"
                 android:src="@drawable/ic_clothes" />
 
             <ImageView
@@ -80,6 +84,7 @@
                 android:layout_height="48dp"
                 android:layout_margin="8dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/clickable_credit_card_icon"
                 android:src="@drawable/ic_credit_card" />
 
             <ImageView
@@ -88,6 +93,7 @@
                 android:layout_height="48dp"
                 android:layout_margin="8dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/clickable_icon_of_lightning"
                 android:src="@drawable/ic_electricity" />
 
             <ImageView
@@ -96,6 +102,7 @@
                 android:layout_height="48dp"
                 android:layout_margin="8dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/clickable_icon_of_a_video_game_control"
                 android:src="@drawable/ic_game_control" />
 
             <ImageView
@@ -104,6 +111,7 @@
                 android:layout_height="48dp"
                 android:layout_margin="8dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/clickable_icon_of_a_gas_station_pump"
                 android:src="@drawable/ic_gas_station" />
 
             <ImageView
@@ -112,6 +120,7 @@
                 android:layout_height="48dp"
                 android:layout_margin="8dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/clickable_icon_of_a_growing_chart"
                 android:src="@drawable/ic_graphic" />
 
             <ImageView
@@ -120,6 +129,7 @@
                 android:layout_height="48dp"
                 android:layout_margin="8dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/clickable_icon_of_a_house"
                 android:src="@drawable/ic_home" />
 
             <ImageView
@@ -128,6 +138,7 @@
                 android:layout_height="48dp"
                 android:layout_margin="8dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/clickable_key_icon"
                 android:src="@drawable/ic_key" />
 
             <ImageView
@@ -136,6 +147,7 @@
                 android:layout_height="48dp"
                 android:layout_margin="8dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/clickable_icon_of_a_supermarket_cart"
                 android:src="@drawable/ic_shopping_cart" />
 
             <ImageView
@@ -144,6 +156,7 @@
                 android:layout_height="48dp"
                 android:layout_margin="8dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/clickable_icon_of_a_drop_of_water"
                 android:src="@drawable/ic_water_drop" />
 
             <ImageView
@@ -152,6 +165,7 @@
                 android:layout_height="48dp"
                 android:layout_margin="8dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/wifi_s_clickable_icon"
                 android:src="@drawable/ic_wifi" />
 
         </GridLayout>

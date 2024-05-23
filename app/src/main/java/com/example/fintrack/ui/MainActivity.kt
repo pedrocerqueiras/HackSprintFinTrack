@@ -117,21 +117,17 @@ class MainActivity : AppCompatActivity() {
             if (selected.name == "+") {
                 showCreateCategoryBottomSheet()
             } else {
-
                 val categoryTemp = categories.map { item ->
                     when {
                         item.name == selected.name && item.isSelected -> item.copy(
                             isSelected = true
                         )
-
                         item.name == selected.name && !item.isSelected -> item.copy(
                             isSelected = true
                         )
-
                         item.name != selected.name && item.isSelected -> item.copy(
                             isSelected = false
                         )
-
                         else -> item
                     }
                 }
@@ -143,7 +139,6 @@ class MainActivity : AppCompatActivity() {
                         getExpensesFromDataBase()
                     }
                 }
-
                 categoryAdapter.submitList(categoryTemp)
             }
         }
@@ -180,57 +175,57 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getCategoriesFromDataBase() {
-        val categoriesFromDb: List<CategoryEntity> = categoryDao.getAllCategories()
-        categoriesEntity = categoriesFromDb
+        GlobalScope.launch(Dispatchers.IO) {
+            val categoriesFromDb: List<CategoryEntity> = categoryDao.getAllCategories()
+            categoriesEntity = categoriesFromDb
 
-        GlobalScope.launch(Dispatchers.Main) {
+            withContext(Dispatchers.Main) {
+                if (categoriesEntity.isEmpty()) {
+                    rvCategory.isVisible = false
+                    fabCreateExpense.isVisible = false
+                    tvSubTitleMain.isVisible = false
+                    ctnEmptyView.isVisible = true
+                    tvTotalExpenses.isVisible = false
+                } else {
+                    rvCategory.isVisible = true
+                    tvTotalExpenses.isVisible = true
+                    fabCreateExpense.isVisible = true
+                    tvSubTitleMain.isVisible = true
+                    ctnEmptyView.isVisible = false
+                }
 
-            if (categoriesEntity.isEmpty()) {
-                rvCategory.isVisible = false
-                fabCreateExpense.isVisible = false
-                tvSubTitleMain.isVisible = false
-                ctnEmptyView.isVisible = true
-                tvTotalExpenses.isVisible = false
-            } else {
-                rvCategory.isVisible = true
-                tvTotalExpenses.isVisible = true
-                fabCreateExpense.isVisible = true
-                tvSubTitleMain.isVisible = true
-                ctnEmptyView.isVisible = false
+                val categoriesUiData = categoriesFromDb.map {
+                    CategoryUiData(
+                        name = it.name,
+                        isSelected = it.name == selectedCategory, // Seleciona a nova categoria
+                        icon = it.iconResId,
+                        color = it.color
+                    )
+                }.toMutableList()
+
+                categoriesUiData.add(
+                    CategoryUiData(
+                        name = "+",
+                        isSelected = false,
+                        icon = 0,
+                        color = 0
+                    )
+                )
+                val categoryListTemp = mutableListOf(
+                    CategoryUiData(
+                        name = "ALL",
+                        isSelected = selectedCategory == "ALL",
+                        icon = 0,
+                        color = 0
+                    )
+                )
+
+                categoryListTemp.addAll(categoriesUiData)
+                categories = categoryListTemp
+                categoryAdapter.submitList(categories)
+
+                refreshExpensesForSelectedCategory()
             }
-        }
-
-        val categoriesUiData = categoriesFromDb.map {
-            CategoryUiData(
-                name = it.name,
-                isSelected = it.isSelected,
-                icon = it.iconResId,
-                color = it.color
-            )
-        }
-            .toMutableList()
-
-        categoriesUiData.add(
-            CategoryUiData(
-                name = "+",
-                isSelected = false,
-                icon = 0,
-                color = 0
-            )
-        )
-        val categoryListTemp = mutableListOf(
-            CategoryUiData(
-                name = "ALL",
-                isSelected = true,
-                icon = 0,
-                color = 0
-            )
-        )
-
-        categoryListTemp.addAll(categoriesUiData)
-        GlobalScope.launch(Dispatchers.Main) {
-            categories = categoryListTemp
-            categoryAdapter.submitList(categories)
         }
     }
 
@@ -247,7 +242,7 @@ class MainActivity : AppCompatActivity() {
                     category = it.category,
                     amount = it.amount,
                     iconResId = category?.iconResId ?: R.drawable.ic_graphic,
-                    color = category?.color ?: Color.BLACK
+                    color = category?.color ?: R.color.color_black
                 )
             }
             // Certifica que a atualização da lista ocorra na thread principal
@@ -261,6 +256,9 @@ class MainActivity : AppCompatActivity() {
                 selectedCategory?.let { category ->
                     if (category != "ALL") {
                         filterExpenseByCategoryName(category)
+                    } else {
+                        // Mostrar todas as despesas se a categoria for "ALL"
+                        expenseAdapter.submitList(expenseUiData)
                     }
                 }
             }
@@ -270,7 +268,15 @@ class MainActivity : AppCompatActivity() {
     private fun insertCategory(categoryEntity: CategoryEntity) {
         GlobalScope.launch(Dispatchers.IO) {
             categoryDao.insert(categoryEntity)
+
+            // Seleciona a categoria após criá-la
+            selectedCategory = categoryEntity.name
+
             getCategoriesFromDataBase()
+
+            withContext(Dispatchers.Main) {
+                refreshExpensesForSelectedCategory()
+            }
         }
     }
 
@@ -305,7 +311,12 @@ class MainActivity : AppCompatActivity() {
             expenseDao.deleteAll(expensesToBeDeleted)
             categoryDao.delete(categoryEntity)
             getCategoriesFromDataBase()
-            getExpensesFromDataBase()
+
+            // Atualiza a lista de despesas após a exclusão da categoria
+            withContext(Dispatchers.Main) {
+                selectedCategory = "ALL"
+                refreshExpensesForSelectedCategory()
+            }
         }
     }
 

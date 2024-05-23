@@ -1,5 +1,7 @@
 package com.example.fintrack
 
+import android.content.Context
+import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +13,10 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fintrack.ui.expense.ExpenseUiData
 
+
+fun getColor(context: Context, colorResId: Int): Int {
+    return ContextCompat.getColor(context, colorResId)
+}
 class ExpenseListAdapter(
     private val onClick: (ExpenseUiData) -> Unit
 ) : ListAdapter<ExpenseUiData, ExpenseListAdapter.ExpenseViewHolder>(ExpenseDiffCallback()) {
@@ -24,16 +30,17 @@ class ExpenseListAdapter(
         fun bind(expense: ExpenseUiData) {
             tvExpenseTitle.text = expense.name
             tvExpenseAmount.text = "-R$%.2f".format(expense.amount)
-
-
             ivCategoryIcon.setImageResource(expense.iconResId)
 
-            viewCategoryColor.setBackgroundColor(
-                ContextCompat.getColor(
-                    itemView.context,
-                    expense.color
-                )
-            )
+
+            // Recurso para caso a cor não seja encontrada
+            val color = try {
+                getColor(itemView.context, expense.color)
+            } catch (e: Resources.NotFoundException) {
+                getColor(itemView.context, R.color.color_black)
+            }
+
+            viewCategoryColor.setBackgroundColor(color)
 
             itemView.setOnClickListener {
                 onClick(expense)
