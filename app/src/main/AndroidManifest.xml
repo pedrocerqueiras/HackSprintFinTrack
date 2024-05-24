@@ -27,5 +27,11 @@
             android:name=".ui.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.FinTrack" />
+
+        <activity
+            android:name=".ui.ChartActivity"
+            android:exported="true"
+            android:theme="@style/Theme.FinTrack" />
+
     </application>
 </manifest>

@@ -11,9 +11,8 @@ import android.widget.Button
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.core.view.isVisible
-import com.example.fintrack.ui.category.CategoryUiData
 import com.example.fintrack.R
-import com.example.fintrack.data.CategoryEntity
+import com.example.fintrack.data.entities.CategoryEntity
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
