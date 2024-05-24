@@ -1,10 +1,13 @@
-package com.example.fintrack.data
+package com.example.fintrack.data.entities
 
-import android.graphics.Color
+import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import kotlinx.parcelize.Parcelize
 
+
+@Parcelize
 @Entity
 data class CategoryEntity(
     @PrimaryKey
@@ -16,6 +19,6 @@ data class CategoryEntity(
     val iconResId: Int,
     @ColumnInfo (name = "color")
     val color: Int
-)
+): Parcelable
 
 

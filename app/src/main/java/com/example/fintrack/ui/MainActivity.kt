@@ -1,9 +1,12 @@
 package com.example.fintrack.ui
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.LinearLayout
+import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
@@ -14,8 +17,8 @@ import com.example.fintrack.ui.category.CategoryUiData
 import com.example.fintrack.ExpenseListAdapter
 import com.example.fintrack.ui.expense.ExpenseUiData
 import com.example.fintrack.R
-import com.example.fintrack.data.CategoryEntity
-import com.example.fintrack.data.ExpenseEntity
+import com.example.fintrack.data.entities.CategoryEntity
+import com.example.fintrack.data.entities.ExpenseEntity
 import com.example.fintrack.data.FinTrackDataBase
 import com.example.fintrack.data.dao.CategoryDao
 import com.example.fintrack.data.dao.ExpenseDao
@@ -27,6 +30,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -76,6 +80,34 @@ class MainActivity : AppCompatActivity() {
         fabCreateExpense = findViewById(R.id.fab_create_expense)
         val btnCreateEmpty = findViewById<Button>(R.id.btn_create_empty)
         val rvExpense = findViewById<RecyclerView>(R.id.rv_expense_list)
+        val btnMenu = findViewById<ImageButton>(R.id.btn_menu)
+
+        val popupMenu = PopupMenu(this, btnMenu)
+        popupMenu.inflate(R.menu.menu_main)
+
+        btnMenu.setOnClickListener {
+            popupMenu.show()
+        }
+
+        popupMenu.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.action_chart -> {
+                    GlobalScope.launch(Dispatchers.IO) {
+                        val expenses = expenseDao.getAllExpenses()
+                        val categories = categoryDao.getAllCategories()
+
+                        withContext(Dispatchers.Main) {
+                            val intent = Intent(this@MainActivity, ChartActivity::class.java)
+                            intent.putParcelableArrayListExtra("expenses", ArrayList(expenses))
+                            intent.putParcelableArrayListExtra("categories", ArrayList(categories))
+                            startActivity(intent)
+                        }
+                    }
+                    true
+                }
+                else -> false
+            }
+        }
 
         btnCreateEmpty.setOnClickListener {
             showCreateCategoryBottomSheet()
@@ -84,6 +116,7 @@ class MainActivity : AppCompatActivity() {
         fabCreateExpense.setOnClickListener {
             showCreateUpdateExpenseBottomSheet()
         }
+
 
         categoryAdapter.setOnLongClickListener { categoryToBeDeleted ->
 
