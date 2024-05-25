@@ -24,10 +24,10 @@ class ChartActivity : AppCompatActivity() {
         binding = ActivityChartBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
         // Recupera os dados enviados da MainActivity
         val expenses = intent.getParcelableArrayListExtra<ExpenseEntity>("expenses") ?: listOf()
-        val categories = intent.getParcelableArrayListExtra<CategoryEntity>("categories") ?: listOf()
+        val categories =
+            intent.getParcelableArrayListExtra<CategoryEntity>("categories") ?: listOf()
 
         setupPieChart(expenses, categories)
 

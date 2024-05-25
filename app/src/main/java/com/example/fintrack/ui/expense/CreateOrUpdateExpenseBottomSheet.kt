@@ -20,6 +20,7 @@ import com.google.android.material.textfield.TextInputEditText
 class CreateOrUpdateExpenseBottomSheet(
     private val categoryList: List<CategoryEntity>,
     private val expense: ExpenseUiData? = null,
+    private val selectedCategory: String?,
     private val onCreateClicked: (ExpenseUiData) -> Unit,
     private val onUpdateClicked: (ExpenseUiData) -> Unit,
     private val onDeleteClicked: (ExpenseUiData) -> Unit
@@ -74,6 +75,16 @@ class CreateOrUpdateExpenseBottomSheet(
             btnDelete.isVisible = false
             tvTitle.setText(R.string.add_expense_title)
             btnCreateOrUpdate.setText(R.string.add)
+
+            // Pré-seleciona a categoria se não for "ALL"
+            selectedCategory?.let {
+                if (it != "ALL") {
+                    val currentCategoryIndex = categoryListTemp.indexOf(it)
+                    if (currentCategoryIndex != -1) {
+                        spinner.setSelection(currentCategoryIndex)
+                    }
+                }
+            }
         } else {
             tvTitle.setText(R.string.update_expense_title)
             btnCreateOrUpdate.setText(R.string.update)

@@ -34,4 +34,5 @@
     <string name="clickable_icon_of_a_drop_of_water">clickable icon of a drop of water</string>
     <string name="wifi_s_clickable_icon">WiFi\'s clickable icon</string>
     <string name="menu">Menu</string>
+    <string name="arrow_to_go_back_to_the_previous_screen">arrow to go back to the previous screen</string>
 </resources>

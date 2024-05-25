@@ -46,6 +46,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var fabCreateExpense: FloatingActionButton
     private lateinit var tvSubTitleMain: TextView
     private lateinit var tvTotalExpenses: TextView
+    private lateinit var btnMenu: ImageButton
 
     private val categoryAdapter = CategoryListAdapter()
     private val expenseAdapter by lazy {
@@ -80,7 +81,15 @@ class MainActivity : AppCompatActivity() {
         fabCreateExpense = findViewById(R.id.fab_create_expense)
         val btnCreateEmpty = findViewById<Button>(R.id.btn_create_empty)
         val rvExpense = findViewById<RecyclerView>(R.id.rv_expense_list)
-        val btnMenu = findViewById<ImageButton>(R.id.btn_menu)
+        btnMenu = findViewById(R.id.btn_menu)
+
+        // Para que as Views não apareçam enquanto os dados não são carregados
+        rvCategory.isVisible = false
+        tvTotalExpenses.isVisible = false
+        fabCreateExpense.isVisible = false
+        tvSubTitleMain.isVisible = false
+        btnMenu.isVisible = false
+        ctnEmptyView.isVisible = false
 
         val popupMenu = PopupMenu(this, btnMenu)
         popupMenu.inflate(R.menu.menu_main)
@@ -217,11 +226,13 @@ class MainActivity : AppCompatActivity() {
                     rvCategory.isVisible = false
                     fabCreateExpense.isVisible = false
                     tvSubTitleMain.isVisible = false
+                    btnMenu.isVisible = false
                     ctnEmptyView.isVisible = true
                     tvTotalExpenses.isVisible = false
                 } else {
                     rvCategory.isVisible = true
                     tvTotalExpenses.isVisible = true
+                    btnMenu.isVisible = true
                     fabCreateExpense.isVisible = true
                     tvSubTitleMain.isVisible = true
                     ctnEmptyView.isVisible = false
@@ -383,6 +394,7 @@ class MainActivity : AppCompatActivity() {
 
         val createExpenseBottomSheet = CreateOrUpdateExpenseBottomSheet(
             expense = expenseUiData,
+            selectedCategory = if (selectedCategory == "ALL") null else selectedCategory,
             categoryList = categoriesEntity,
             onCreateClicked = { expenseToBeCreated ->
                 val expenseEntityToBeInsert = ExpenseEntity(
