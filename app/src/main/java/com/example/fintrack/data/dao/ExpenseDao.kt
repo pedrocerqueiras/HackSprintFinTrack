@@ -14,6 +14,7 @@ interface ExpenseDao {
 
     @Query ("SELECT * FROM expenseentity")
     fun getAllExpenses(): List<ExpenseEntity>
+
     @Insert (onConflict = OnConflictStrategy.REPLACE)
     fun insertAll (expenseEntities: List<ExpenseEntity>)
 

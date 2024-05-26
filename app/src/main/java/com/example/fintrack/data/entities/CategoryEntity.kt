@@ -7,8 +7,8 @@ import androidx.room.PrimaryKey
 import kotlinx.parcelize.Parcelize
 
 
-@Parcelize
-@Entity
+@Parcelize // Anotação para permitir a serialização
+@Entity // Anotação para definir que esta classe é uma entidade de banco de dados
 data class CategoryEntity(
     @PrimaryKey
     @ColumnInfo("key")
@@ -19,6 +19,4 @@ data class CategoryEntity(
     val iconResId: Int,
     @ColumnInfo (name = "color")
     val color: Int
-): Parcelable
-
-
+): Parcelable // Implementação da interface Parcelable para permitir que objetos dessa classe sejam passados através de intents

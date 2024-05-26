@@ -35,4 +35,6 @@
     <string name="wifi_s_clickable_icon">WiFi\'s clickable icon</string>
     <string name="menu">Menu</string>
     <string name="arrow_to_go_back_to_the_previous_screen">arrow to go back to the previous screen</string>
+    <string name="save_chart">save chart</string>
+    <string name="arrow_to_go_back_to_previous_page">Arrow to go back to previous page</string>
 </resources>
