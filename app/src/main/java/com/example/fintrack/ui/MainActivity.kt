@@ -30,9 +30,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.Calendar
+import java.util.Date
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), DateFilterDialog.DateFilterListener {
 
     // Listas para armazenar dados de categorias e despesas
     private var categories = listOf<CategoryUiData>()
@@ -72,6 +74,10 @@ class MainActivity : AppCompatActivity() {
 
     private val expenseDao: ExpenseDao by lazy {
         db.getExpenseDao()
+    }
+
+    override fun onDateFilterApplied(startDate: Calendar?, endDate: Calendar?) {
+        filterExpensesByDate(startDate, endDate)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -123,6 +129,12 @@ class MainActivity : AppCompatActivity() {
                     }
                     true
                 }
+
+                R.id.action_filter_by_date -> {
+                    showDateFilterDialog()
+                    true
+                }
+
                 else -> false
             }
         }
@@ -219,6 +231,16 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
+    private fun showDateFilterDialog() {
+        val dateFilterDialog =
+            DateFilterDialog.newInstance(object : DateFilterDialog.DateFilterListener {
+                override fun onDateFilterApplied(startDate: Calendar?, endDate: Calendar?) {
+                    filterExpensesByDate(startDate, endDate)
+                }
+            })
+        dateFilterDialog.show(supportFragmentManager, "DateFilterDialog")
+    }
+
     // Busca categorias do banco de dados
     private fun getCategoriesFromDataBase() {
         GlobalScope.launch(Dispatchers.IO) {
@@ -290,6 +312,7 @@ class MainActivity : AppCompatActivity() {
                     name = it.name,
                     category = it.category,
                     amount = it.amount,
+                    date = it.date,
                     iconResId = category?.iconResId ?: R.drawable.ic_graphic,
                     color = category?.color ?: R.color.color_black
                 )
@@ -379,6 +402,7 @@ class MainActivity : AppCompatActivity() {
                     name = it.name,
                     category = it.category,
                     amount = it.amount,
+                    date = it.date,
                     iconResId = categoryEntity?.iconResId ?: R.drawable.ic_graphic,
                     color = categoryEntity?.color ?: Color.BLACK
                 )
@@ -401,7 +425,8 @@ class MainActivity : AppCompatActivity() {
                 val expenseEntityToBeInsert = ExpenseEntity(
                     name = expenseToBeCreated.name,
                     category = expenseToBeCreated.category,
-                    amount = expenseToBeCreated.amount
+                    amount = expenseToBeCreated.amount,
+                    date = expenseToBeCreated.date
                 )
                 insertExpense(expenseEntityToBeInsert)
             },
@@ -410,7 +435,8 @@ class MainActivity : AppCompatActivity() {
                     id = expenseToBeUpdated.id,
                     name = expenseToBeUpdated.name,
                     category = expenseToBeUpdated.category,
-                    amount = expenseToBeUpdated.amount
+                    amount = expenseToBeUpdated.amount,
+                    date = expenseToBeUpdated.date
                 )
                 updateExpense(expenseEntityToBeUpdate)
             },
@@ -419,7 +445,8 @@ class MainActivity : AppCompatActivity() {
                     id = expenseToBeDeleted.id,
                     name = expenseToBeDeleted.name,
                     category = expenseToBeDeleted.category,
-                    amount = expenseToBeDeleted.amount
+                    amount = expenseToBeDeleted.amount,
+                    date = expenseToBeDeleted.date
                 )
                 deleteExpense(expenseEntityToBeDeleted)
             }
@@ -465,5 +492,31 @@ class MainActivity : AppCompatActivity() {
                 filterExpenseByCategoryName(category)
             }
         }
+    }
+
+    private fun filterExpensesByDate(startDate: Calendar?, endDate: Calendar?) {
+        val filteredExpenses = if (startDate != null && endDate != null) {
+            expenses.filter { expense ->
+                val expenseDate = expense.date?.toCalendar()
+                expenseDate != null && (expenseDate in startDate..endDate)
+            }
+        } else {
+            expenses
+        }
+        expenseAdapter.submitList(filteredExpenses)
+        updateTotalExpenses(filteredExpenses)
+    }
+
+    // Atualiza o total de despesas exibido na tela com base na lista filtrada
+    private fun updateTotalExpenses(expenses: List<ExpenseUiData>) {
+        val total = expenses.sumOf { it.amount }
+        tvTotalExpenses.text = getString(R.string.value_total_expenses, total)
+    }
+
+
+    fun Date.toCalendar(): Calendar {
+        val calendar = Calendar.getInstance()
+        calendar.time = this
+        return calendar
     }
 }

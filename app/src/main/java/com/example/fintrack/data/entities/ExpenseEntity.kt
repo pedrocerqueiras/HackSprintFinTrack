@@ -5,6 +5,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import kotlinx.parcelize.Parcelize
+import java.util.Date
 
 @Entity // Anotação para definir que esta classe é uma entidade de banco de dados
     (
@@ -24,4 +25,5 @@ data class ExpenseEntity(
     val name: String,
     val category: String,
     val amount: Double,
+    val date: Date
 ) : Parcelable // Implementação da interface Parcelable para permitir que objetos dessa classe sejam passados através de intents

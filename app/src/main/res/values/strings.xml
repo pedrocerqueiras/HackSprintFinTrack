@@ -37,4 +37,13 @@
     <string name="arrow_to_go_back_to_the_previous_screen">arrow to go back to the previous screen</string>
     <string name="save_chart">save chart</string>
     <string name="arrow_to_go_back_to_previous_page">Arrow to go back to previous page</string>
+    <string name="select_the_date">Select the date</string>
+    <string name="apply_filter">Apply Filter</string>
+    <string name="last_7_days">Last 7 days</string>
+    <string name="last_15_days">Last 15 days</string>
+    <string name="last_30_days">Last 30 days</string>
+    <string name="this_month">This Month</string>
+    <string name="all">All</string>
+    <string name="select_the_start_date">Select the start date</string>
+    <string name="select_the_end_date">Select the end date</string>
 </resources>

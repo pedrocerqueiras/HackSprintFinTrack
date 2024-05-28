@@ -1,5 +1,6 @@
 package com.example.fintrack.ui.expense
 
+import android.app.DatePickerDialog
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -16,6 +17,9 @@ import com.example.fintrack.data.entities.CategoryEntity
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 class CreateOrUpdateExpenseBottomSheet(
     private val categoryList: List<CategoryEntity>,
@@ -25,6 +29,9 @@ class CreateOrUpdateExpenseBottomSheet(
     private val onUpdateClicked: (ExpenseUiData) -> Unit,
     private val onDeleteClicked: (ExpenseUiData) -> Unit
 ) : BottomSheetDialogFragment() {
+
+    private lateinit var tieExpenseDate: TextInputEditText
+    private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -39,13 +46,14 @@ class CreateOrUpdateExpenseBottomSheet(
         val btnDelete = view.findViewById<Button>(R.id.btn_expense_delete)
         val tieExpenseName = view.findViewById<TextInputEditText>(R.id.tie_expense_name)
         val tieExpenseAmount = view.findViewById<TextInputEditText>(R.id.tie_expense_amount)
+        tieExpenseDate = view.findViewById(R.id.tie_expense_date)
         val spinner: Spinner = view.findViewById(R.id.sp_expense_list)
 
         // Variável para armazenar a categoria selecionada
         var expenseCategory: String? = null
 
         // Construção da lista de categorias para o spinner
-        val categoryListTemp = mutableListOf("Select")
+        val categoryListTemp = mutableListOf("Select the category")
         categoryListTemp.addAll(
             categoryList.map { it.name }
         )
@@ -98,6 +106,7 @@ class CreateOrUpdateExpenseBottomSheet(
             btnCreateOrUpdate.setText(R.string.update)
             tieExpenseName.setText(expense.name)
             tieExpenseAmount.setText(expense.amount.toString())
+            tieExpenseDate.setText(expense.date.toString())
             btnDelete.isVisible = true
 
             // Seleciona a categoria da despesa existente no spinner
@@ -105,6 +114,24 @@ class CreateOrUpdateExpenseBottomSheet(
             if (currentCategoryIndex != -1) {
                 spinner.setSelection(currentCategoryIndex)
             }
+        }
+
+        // Configuração do DatePickerDialog para selecionar a data
+        tieExpenseDate.setOnClickListener {
+            val calendar = Calendar.getInstance()
+            if (expense != null) {
+                calendar.time = expense.date
+            }
+            val year = calendar.get(Calendar.YEAR)
+            val month = calendar.get(Calendar.MONTH)
+            val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+            val datePickerDialog = DatePickerDialog(requireContext(), { _, selectedYear, selectedMonth, selectedDay ->
+                val selectedDate = Calendar.getInstance()
+                selectedDate.set(selectedYear, selectedMonth, selectedDay)
+                tieExpenseDate.setText(dateFormat.format(selectedDate.time))
+            }, year, month, day)
+            datePickerDialog.show()
         }
 
         // Manipulador para o botão de delete
@@ -121,9 +148,11 @@ class CreateOrUpdateExpenseBottomSheet(
         btnCreateOrUpdate.setOnClickListener {
             val name = tieExpenseName.text.toString().trim()
             val amount = tieExpenseAmount.text.toString().toDoubleOrNull() ?: 0.0
+            val dateStr = tieExpenseDate.text.toString().trim()
+            val date = dateFormat.parse(dateStr)
 
             // Verifica se a categoria e o nome da despesa estão preenchidos
-            if (expenseCategory != "Select" && name.isNotEmpty()) {
+            if (expenseCategory != "Select" && name.isNotEmpty() && date != null) {
 
                 requireNotNull(expenseCategory)
 
@@ -137,6 +166,7 @@ class CreateOrUpdateExpenseBottomSheet(
                             name = name,
                             category = requireNotNull(expenseCategory),
                             amount = amount,
+                            date = date,
                             iconResId = 0,
                             color = 0
                         )
@@ -150,6 +180,7 @@ class CreateOrUpdateExpenseBottomSheet(
                             name = name,
                             category = requireNotNull(expenseCategory),
                             amount = amount,
+                            date = date,
                             iconResId = 0,
                             color = 0
                         )
