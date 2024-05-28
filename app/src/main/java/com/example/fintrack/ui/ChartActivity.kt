@@ -67,6 +67,9 @@ class ChartActivity : AppCompatActivity() {
             // Calcula valores das fatias do gráfico com base nos dados das despesas
             val pieEntries = calculatePieEntries(expenses, categories)
 
+            // Calcula o valor total das despesas
+            val totalExpenses = expenses.sumOf { it.amount }
+
             // Cria o conjunto de dados do PieChart
             val dataSet = PieDataSet(pieEntries, "").apply {
                 sliceSpace = 3f
@@ -96,6 +99,13 @@ class ChartActivity : AppCompatActivity() {
                 yOffset = 0f
                 textSize = 14f
             }
+
+            // Adiciona uma entrada de legenda personalizada para mostrar o valor total das despesas
+            pieChart.setExtraOffsets(5f, 10f, 5f, 5f)
+            pieChart.centerText = "Total: \$${String.format("%.2f", totalExpenses)}"
+            pieChart.setCenterTextSize(14f)
+            pieChart.setCenterTextColor(Color.BLACK)
+
         } else {
             // Lida com o caso em que não há expenses ou categorias válidas
             Toast.makeText(this, "No valid data available", Toast.LENGTH_SHORT).show()

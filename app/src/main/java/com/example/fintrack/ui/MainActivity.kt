@@ -44,6 +44,10 @@ class MainActivity : AppCompatActivity(), DateFilterDialog.DateFilterListener {
     // Variável para armazenar a categoria selecionada
     private var selectedCategory: String? = "ALL"
 
+    // Variáveis para armazenar as datas de filtro
+    private var startDate: Calendar? = null
+    private var endDate: Calendar? = null
+
     // Views do layout
     private lateinit var rvCategory: RecyclerView
     private lateinit var ctnEmptyView: LinearLayout
@@ -62,10 +66,7 @@ class MainActivity : AppCompatActivity(), DateFilterDialog.DateFilterListener {
 
     // Instâncias do banco de dados e DAOs
     private val db by lazy {
-        Room.databaseBuilder(
-            applicationContext,
-            FinTrackDataBase::class.java, "database-fin-track"
-        ).build()
+        FinTrackDataBase.getInstance(applicationContext)
     }
 
     private val categoryDao: CategoryDao by lazy {
@@ -76,10 +77,14 @@ class MainActivity : AppCompatActivity(), DateFilterDialog.DateFilterListener {
         db.getExpenseDao()
     }
 
+    // Função chamada quando o filtro de data é aplicado
     override fun onDateFilterApplied(startDate: Calendar?, endDate: Calendar?) {
+        this.startDate = startDate
+        this.endDate = endDate
         filterExpensesByDate(startDate, endDate)
     }
 
+    // Função chamada quando a activity é criada
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -90,9 +95,10 @@ class MainActivity : AppCompatActivity(), DateFilterDialog.DateFilterListener {
         tvSubTitleMain = findViewById(R.id.tv_title_main)
         tvTotalExpenses = findViewById(R.id.tv_total_expenses)
         fabCreateExpense = findViewById(R.id.fab_create_expense)
+        btnMenu = findViewById(R.id.btn_menu)
+
         val btnCreateEmpty = findViewById<Button>(R.id.btn_create_empty)
         val rvExpense = findViewById<RecyclerView>(R.id.rv_expense_list)
-        btnMenu = findViewById(R.id.btn_menu)
 
         // Oculta as views até que os dados sejam carregados
         rvCategory.isVisible = false
@@ -231,6 +237,7 @@ class MainActivity : AppCompatActivity(), DateFilterDialog.DateFilterListener {
         )
     }
 
+    // Exibe o dialog de filtro de data
     private fun showDateFilterDialog() {
         val dateFilterDialog =
             DateFilterDialog.newInstance(object : DateFilterDialog.DateFilterListener {
@@ -264,6 +271,7 @@ class MainActivity : AppCompatActivity(), DateFilterDialog.DateFilterListener {
                     ctnEmptyView.isVisible = false
                 }
 
+                // Mapeia entidades de categoria para dados de UI
                 val categoriesUiData = categoriesFromDb.map {
                     CategoryUiData(
                         name = it.name,
@@ -305,6 +313,7 @@ class MainActivity : AppCompatActivity(), DateFilterDialog.DateFilterListener {
             val expensesFromDb: List<ExpenseEntity> = expenseDao.getAllExpenses()
             val categoryMap = categoriesEntity.associateBy { it.name }
 
+            // Mapeia entidades de expenses para dados de UI
             val expenseUiData = expensesFromDb.map {
                 val category = categoryMap[it.category]
                 ExpenseUiData(
@@ -396,6 +405,7 @@ class MainActivity : AppCompatActivity(), DateFilterDialog.DateFilterListener {
             val expensesFromDb: List<ExpenseEntity> = expenseDao.getAllByCategoryName(category)
             val categoryEntity = categoriesEntity.find { it.name == category }
 
+            // Mapeia entidades de expenses para dados de UI
             val expenseUiData = expensesFromDb.map {
                 ExpenseUiData(
                     id = it.id,
@@ -494,6 +504,7 @@ class MainActivity : AppCompatActivity(), DateFilterDialog.DateFilterListener {
         }
     }
 
+    // Filtra expenses por data
     private fun filterExpensesByDate(startDate: Calendar?, endDate: Calendar?) {
         val filteredExpenses = if (startDate != null && endDate != null) {
             expenses.filter { expense ->
@@ -514,6 +525,7 @@ class MainActivity : AppCompatActivity(), DateFilterDialog.DateFilterListener {
     }
 
 
+    // Converte uma Date para Calendar
     fun Date.toCalendar(): Calendar {
         val calendar = Calendar.getInstance()
         calendar.time = this

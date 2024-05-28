@@ -20,9 +20,11 @@ abstract class FinTrackDataBase: RoomDatabase() {
     abstract fun getExpenseDao(): ExpenseDao
 
     companion object {
+        // Anotação Volatile para garantir que a variável seja visível para todos os threads.
         @Volatile
         private var INSTANCE: FinTrackDataBase? = null
 
+        // Função para obter a instância do banco de dados, criando-a se necessário.
         fun getInstance(context: Context): FinTrackDataBase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
