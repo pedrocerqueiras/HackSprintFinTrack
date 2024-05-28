@@ -3,4 +3,8 @@
     <item
         android:id="@+id/action_chart"
         android:title="Charts" />
+
+    <item
+        android:id="@+id/action_filter_by_date"
+        android:title="Filter by date" />
 </menu>

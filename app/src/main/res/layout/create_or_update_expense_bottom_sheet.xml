@@ -59,7 +59,25 @@
         android:hint="@string/expense_amount_ex_100_50"
         android:inputType="numberDecimal"
         android:minHeight="48dp" />
+    </com.google.android.material.textfield.TextInputLayout>
 
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/tie_expense_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLength="10"
+            android:singleLine="true"
+            android:hint="@string/select_the_date"
+            android:inputType="none"
+            android:focusable="false"
+            android:minHeight="48dp" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <LinearLayout
