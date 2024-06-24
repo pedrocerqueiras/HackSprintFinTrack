@@ -42,15 +42,8 @@ HackSprintFinTrack was developed for the Hacksprint competition hosted by the De
 - **Other**: Splash Screen, Custom UI Elements
 
 ## Screenshots
-<img src = "![splash_screen](https://github.com/pedrocerqueiras/HackSprintFinTrack/assets/123911001/57a6937d-f04c-44ef-952d-b6fe46e61823)" alt = "Splash Screen" width = "300"/>
-<img src = "![Screenshot_20240528_174903](https://github.com/pedrocerqueiras/HackSprintFinTrack/assets/123911001/fa41284d-7990-4a53-83b6-d3e6244d463b)" alt = "Main Screen" width = "300"/>
-<img src = "![chart_pie](https://github.com/pedrocerqueiras/HackSprintFinTrack/assets/123911001/674e9a7f-9aa2-4af5-bd8b-2373ee3f1d86)" alt = "Pie Chart" width = "300"/>
-<img src = "![calendar](https://github.com/pedrocerqueiras/HackSprintFinTrack/assets/123911001/ee294420-2469-4831-a0b3-94e1b44e0ebc)" alt = "Calendar" width = "300"/>
 
-
-## Getting Started
-
-### Prerequisites
-
-- Android Studio
-- Kotlin
+<img src="https://github.com/pedrocerqueiras/HackSprintFinTrack/assets/123911001/57a6937d-f04c-44ef-952d-b6fe46e61823" alt="Splash Screen" width="300"/>
+<img src="https://github.com/pedrocerqueiras/HackSprintFinTrack/assets/123911001/fa41284d-7990-4a53-83b6-d3e6244d463b" alt="Main Screen" width="300"/>
+<img src="https://github.com/pedrocerqueiras/HackSprintFinTrack/assets/123911001/674e9a7f-9aa2-4af5-bd8b-2373ee3f1d86" alt="Pie Chart" width="300"/>
+<img src="https://github.com/pedrocerqueiras/HackSprintFinTrack/assets/123911001/ee294420-2469-4831-a0b3-94e1b44e0ebc" alt="Calendar" width="300"/>
