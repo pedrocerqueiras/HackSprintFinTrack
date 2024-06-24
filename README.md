@@ -47,3 +47,5 @@ HackSprintFinTrack was developed for the Hacksprint competition hosted by the De
 <img src="https://github.com/pedrocerqueiras/HackSprintFinTrack/assets/123911001/fa41284d-7990-4a53-83b6-d3e6244d463b" alt="Main Screen" width="300"/>
 <img src="https://github.com/pedrocerqueiras/HackSprintFinTrack/assets/123911001/674e9a7f-9aa2-4af5-bd8b-2373ee3f1d86" alt="Pie Chart" width="300"/>
 <img src="https://github.com/pedrocerqueiras/HackSprintFinTrack/assets/123911001/ee294420-2469-4831-a0b3-94e1b44e0ebc" alt="Calendar" width="300"/>
+<img src="https://github.com/pedrocerqueiras/HackSprintFinTrack/assets/123911001/a0d8441c-1b73-437a-8152-f546d9a154b4" alt="Create Category" width="300"/>
+<img src="https://github.com/pedrocerqueiras/HackSprintFinTrack/assets/123911001/ac49b5a3-e8b0-4d73-a0c1-6d47ae461614" alt="Empty State" width="300"/>
