@@ -1,35 +1,56 @@
-<div align="center">
-   
-   ![Variation=Logotype 02](https://github.com/colussicode/FinTrack/assets/54089435/c5b55d7c-2b31-450e-8dc5-86473e9566d1)
+# HackSprintFinTrack
 
-</div>
+## Description
 
-HackSprint 2024 - Devspace 
-==========================
-Evento de tecnologia promovido pelo Devspace.
+HackSprintFinTrack is an Android application designed to help everyday people manage their expenses efficiently. Developed in Kotlin, it features a comprehensive set of tools for expense tracking, data visualization, and personalized user experience.
 
-# Informações da Hacksprint 
+## Features
 
-### 1. O que é uma Hacksprint? 
-   HackSprint é um evento onde todos os participantes da comunidade se juntam em grupos ou duplas para desenvolver um desafio de código e trocar conhecimentos.
-   Seguindo a regra do [70/20/10](https://www.google.com/search?q=o+que+%C3%A9+a+regra+70+20+10&rlz=1C5CHFA_enDE1036DE1036&oq=o+que+%C3%A9+a+regra+70+20+10&gs_lcrp=EgZjaHJvbWUyBggAEEUYOTIICAEQABgWGB7SAQg3ODcyajBqN6gCALACAA&sourceid=chrome&ie=UTF-8#imgrc=0oHCIDUqPyAbqM) o evento tem como objetivo reforçar a colaboração e mão na massa, trazendo uma oportunidade de acelerar o aprendizado em um período de 2 semanas.
+- **Expense Management**: Full CRUD (Create, Read, Update, Delete) operations for expenses and categories.
+- **Data Persistence**: Uses Room Database for efficient and reliable data storage.
+- **Data Visualization**: Generates pie charts to visualize expense distribution.
+- **Graph Saving**: Save generated charts directly to the photo gallery.
+- **Custom UI Elements**: Includes a splash screen and customized UI components.
+- **RecyclerView**: Efficiently display lists of expenses and categories.
+- **Expense Filtering**: Filter expenses by categories and specific dates.
 
-### 2. Por que duas semanas?
-   Vamos simular o tempo de uma Sprint para gerenciamento de desenvolvimento software, com isso nossos alunos terão a oportunidade de ter uma experiência imersiva em como funciona o dia a dia de um programador que já trabalha na área.
+## Target Audience
 
-### 3. Data:
-   * Início: 13/05/2024
-   * Apresentação final: 27/05/2024
-   * 29/05/2024: 29/05/2024
+HackSprintFinTrack is aimed at everyday individuals who want to take control of their expenses. Users can filter expenses by categories and specific dates, allowing for detailed tracking and analysis of their financial habits.
 
-# Primeiros passos
-   1. Clonar board de tarefas - [Acessar board de tarefas](https://www.notion.so/devspacecommunity/Board-de-tarefas-16b3c63daa1641f0aa53d92ff37abe52)
-   2. Usar o repositório como template.
-   3. Organizar as reuniões(Planning, Daily, Retro). 
-   4. Agora é só codar e subir as alterações para o github.
-   5. Quando finalizado, enviar link do projeto no canal do discord.
+## Technical Challenges and Solutions
 
-# License
+One of the main technical challenges was creating and saving pie charts to the photo gallery. Solutions were found by researching online forums, consulting AI, and extensively testing different approaches.
 
-Now in Android is distributed under the terms of the Apache License (Version 2.0). See the
-[license](LICENSE) for more information.
+## Code Structure and Architecture
+
+The code is organized into three main packages:
+- **Data**: Handles all data-related operations, including database management and CRUD operations.
+- **Ui**: Manages the user interface components, including activities, fragments, and custom views.
+- **Utils**: Contains utility classes and helper functions to support various functionalities across the app.
+
+## Competition
+
+HackSprintFinTrack was developed for the Hacksprint competition hosted by the DevSpace Community, where it was declared the winning app.
+
+## Technologies Used
+
+- **Language**: Kotlin
+- **UI**: XML, RecyclerView
+- **Data Persistence**: Room Database
+- **Charts**: Pie Chart
+- **Other**: Splash Screen, Custom UI Elements
+
+## Screenshots
+![splash_screen](https://github.com/pedrocerqueiras/HackSprintFinTrack/assets/123911001/57a6937d-f04c-44ef-952d-b6fe46e61823)
+![Screenshot_20240528_174903](https://github.com/pedrocerqueiras/HackSprintFinTrack/assets/123911001/fa41284d-7990-4a53-83b6-d3e6244d463b)
+![chart_pie](https://github.com/pedrocerqueiras/HackSprintFinTrack/assets/123911001/674e9a7f-9aa2-4af5-bd8b-2373ee3f1d86)
+![calendar](https://github.com/pedrocerqueiras/HackSprintFinTrack/assets/123911001/ee294420-2469-4831-a0b3-94e1b44e0ebc)
+
+
+## Getting Started
+
+### Prerequisites
+
+- Android Studio
+- Kotlin
